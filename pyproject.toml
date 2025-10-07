@@ -9,3 +9,9 @@ dependencies = [
     "mysqlclient>=2.2.7",
     "pydantic-settings>=2.11.0",
 ]
+
+[dependency-groups]
+dev = [
+    "pyright>=1.1.406",
+    "ruff>=0.13.3",
+]

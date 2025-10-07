@@ -1,0 +1,15 @@
+{
+    "include": [
+        "**/*.py"
+    ],
+    "exclude": [
+        "**/.venv",
+        "**/node_modules",
+        "**/__pycache__",
+        "**/migrations",
+        "manage.py"
+    ],
+    "typeCheckingMode": "standard",
+    "venvPath": ".",
+    "venv": ".venv"
+}
