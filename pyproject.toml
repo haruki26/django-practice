@@ -14,4 +14,11 @@ dependencies = [
 dev = [
     "pyright>=1.1.406",
     "ruff>=0.13.3",
+    "taskipy>=1.14.1",
 ]
+
+[tool.taskipy.tasks]
+fmt = "uv run ruff check --fix && uv run ruff format"
+type = "uv run pyright"
+dev = "uv run python django_project/manage.py runserver"
+manage = "uv run python django_project/manage.py"
