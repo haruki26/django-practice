@@ -1,0 +1,37 @@
+services:
+
+  python-dev:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    volumes:
+      - ./..:/app:cached
+    networks:
+      - dev_network
+    command: sleep infinity
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql_container
+    ports:
+      - "3306:3306"
+    env_file:
+      - ./../.env
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_ROOT_HOST: "%"
+      MYSQL_DATABASE: psysdb
+      TZ: "Asia/Tokyo"
+    volumes:
+      - ./../docker/mysql/conf/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ./../docker/mysql/init:/docker-entrypoint-initdb.d
+      - ./../docker/mysql/data:/var/lib/mysql
+    networks:
+      - dev_network
+
+networks:
+  dev_network:
+    name: dev_network
+    driver: bridge

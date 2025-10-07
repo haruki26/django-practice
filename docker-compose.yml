@@ -1,0 +1,34 @@
+services:
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql_container
+    ports:
+      - "3306:3306"
+    env_file:
+      - ./.env
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_ROOT_HOST: "%"
+      MYSQL_DATABASE: psysdb
+      TZ: "Asia/Tokyo"
+    volumes:
+      - ./docker/mysql/conf/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ./docker/mysql/init:/docker-entrypoint-initdb.d
+      - ./docker/mysql/data:/var/lib/mysql
+    networks:
+      - dev_network
+
+  python-server:
+    container_name: python-server-container
+    build:
+      context: ./docker/python
+    ports:
+      - "8000:8000"
+    networks:
+      - server_network
+
+networks:
+  server_network:
+    name: server_network
+    driver: bridge

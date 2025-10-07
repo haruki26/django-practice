@@ -1,0 +1,28 @@
+{
+  "name": "Django Workspace",
+  "dockerComposeFile": ["./docker-compose.yml"],
+  "service": "python-dev",
+  "workspaceFolder": "/app",
+  "remoteUser": "vscode",
+  "mounts": [
+    {
+      "type": "volume",
+      "target": "${containerWorkspaceFolder}/.venv"
+    }
+  ],
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.shell.linux": "/bin/bash",
+        "editor.renderWhitespace": "all"
+      },
+      "extensions": [
+        "ms-python.python",
+        "charliermarsh.ruff"
+      ]
+    }
+  },
+  "postCreateCommand": "chmod +x .devcontainer/scripts/*.sh",
+  "postAttachCommand": "./.devcontainer/scripts/postAttachCommand.sh",
+  "forwardPorts": [8000]
+}
