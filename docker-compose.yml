@@ -20,7 +20,6 @@ services:
       - dev_network
 
   python-server:
-    container_name: python-server-container
     build:
       context: ./docker/python
     ports:
