@@ -1,0 +1,66 @@
+{% extends "psys/base.html" %}
+{% block title %}商品別受注集計 | 販売支援システム{% endblock %}
+{% block content %}
+<section aria-labelledby="item-title" class="grid-two">
+  <div>
+    <h2 id="item-title">商品別受注集計</h2>
+    <p class="section__description">得意先コードを入力すると商品ごとの受注状況を表示します。</p>
+    <form method="post" class="form">
+      {% csrf_token %}
+      {% for field in form %}
+      <div class="form__group">
+        <label class="form__label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {{ field }}
+        {% for error in field.errors %}
+        <span class="form__hint" role="alert">{{ error }}</span>
+        {% endfor %}
+      </div>
+      {% endfor %}
+      <div class="form__actions">
+        <button type="submit" class="button button--primary">集計する</button>
+        <a class="button button--secondary" href="{% url 'psys:reports-monthly' %}">月次集計へ</a>
+      </div>
+    </form>
+  </div>
+  <div>
+    <h3>集計結果</h3>
+    {% if customer and rows %}
+    <div class="summary-card">
+      <p class="summary-card__title">得意先</p>
+      <p class="summary-card__value">{{ customer.customer_name }}</p>
+      <span class="badge">コード: {{ customer.customer_code }}</span>
+    </div>
+    <div class="table-wrapper">
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">商品コード</th>
+            <th scope="col">商品名</th>
+            <th scope="col" class="table__numeric">合計数量</th>
+            <th scope="col" class="table__numeric">単価(税込)</th>
+            <th scope="col" class="table__numeric">合計金額(税込)</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in rows %}
+          <tr>
+            <td>{{ row.item_code }}</td>
+            <td>{{ row.item_name }}</td>
+            <td class="table__numeric">{{ row.total_quantity }}</td>
+            <td class="table__numeric">¥{{ row.unit_price|floatformat:2 }}</td>
+            <td class="table__numeric">¥{{ row.total_amount|floatformat:2 }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div class="summary-card">
+      <p class="summary-card__title">総計</p>
+      <p class="summary-card__value">¥{{ total|floatformat:2 }}</p>
+    </div>
+    {% else %}
+    <p class="section__description">集計結果はまだ表示されていません。</p>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

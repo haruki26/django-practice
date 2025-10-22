@@ -1,0 +1,27 @@
+{% extends "psys/base.html" %}
+{% block title %}トップ | 販売支援システム{% endblock %}
+{% block content %}
+<section class="hero">
+  <div class="card">
+    <h2 class="card__title">販売支援システム モックUI</h2>
+    <p class="card__description">
+      このモックは画面遷移と入力体験を確認するためのものです。実際のデータベースとは連携しておらず、入力内容は保存されません。
+    </p>
+    <div class="hero__actions">
+      <a class="button button--primary" href="{% url 'psys:login' %}">ログイン画面へ</a>
+      <a class="button button--secondary" href="{% url 'psys:customer-menu' %}">得意先メニュー</a>
+    </div>
+  </div>
+</section>
+<section>
+  <h3>お知らせ</h3>
+  <div class="card-grid">
+    {% for announcement in announcements %}
+    <article class="card">
+      <h4 class="card__title">{{ announcement.title }}</h4>
+      <p class="card__description">{{ announcement.body }}</p>
+    </article>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

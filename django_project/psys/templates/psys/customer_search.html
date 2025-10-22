@@ -1,0 +1,44 @@
+{% extends "psys/base.html" %}
+{% block title %}得意先検索 | 販売支援システム{% endblock %}
+{% block content %}
+<section class="grid-two" aria-labelledby="search-title">
+  <div>
+    <h2 id="search-title">得意先検索</h2>
+    <p class="section__description">得意先コードを入力すると登録情報を表示します。</p>
+    <form method="post" class="form">
+      {% csrf_token %}
+      {% for field in form %}
+      <div class="form__group">
+        <label class="form__label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {{ field }}
+        {% for error in field.errors %}
+        <span class="form__hint" role="alert">{{ error }}</span>
+        {% endfor %}
+      </div>
+      {% endfor %}
+      <div class="form__actions">
+        <button type="submit" class="button button--primary">検索</button>
+        <a class="button button--secondary" href="{% url 'psys:customer-menu' %}">メニューに戻る</a>
+      </div>
+    </form>
+  </div>
+  <div>
+    <h3>検索結果</h3>
+    {% if customer %}
+    <div class="summary-card">
+      <p class="summary-card__title">得意先情報</p>
+      <dl class="definition-list">
+        <div class="definition-list__row"><dt>得意先コード</dt><dd>{{ customer.customer_code }}</dd></div>
+        <div class="definition-list__row"><dt>得意先名</dt><dd>{{ customer.customer_name }}</dd></div>
+        <div class="definition-list__row"><dt>電話番号</dt><dd>{{ customer.customer_telno }}</dd></div>
+        <div class="definition-list__row"><dt>郵便番号</dt><dd>{{ customer.customer_postalcode }}</dd></div>
+        <div class="definition-list__row"><dt>住所</dt><dd>{{ customer.customer_address }}</dd></div>
+        <div class="definition-list__row"><dt>割引率</dt><dd>{{ customer.discount_rate }}%</dd></div>
+      </dl>
+    </div>
+    {% else %}
+    <p class="section__description">検索結果は未表示です。コードを入力して検索してください。</p>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

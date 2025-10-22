@@ -1,0 +1,39 @@
+{% extends "psys/base.html" %}
+{% block title %}得意先一覧 | 販売支援システム{% endblock %}
+{% block content %}
+<section aria-labelledby="list-title">
+  <header class="section__header">
+    <h2 id="list-title">得意先一覧</h2>
+    <p class="section__description">モックデータとして登録されている得意先を表示します。</p>
+  </header>
+  <div class="table-wrapper">
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">得意先コード</th>
+          <th scope="col">得意先名</th>
+          <th scope="col">電話番号</th>
+          <th scope="col">郵便番号</th>
+          <th scope="col">住所</th>
+          <th scope="col">割引率</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for customer in customers %}
+        <tr>
+          <td>{{ customer.customer_code }}</td>
+          <td>{{ customer.customer_name }}</td>
+          <td>{{ customer.customer_telno }}</td>
+          <td>{{ customer.customer_postalcode }}</td>
+          <td>{{ customer.customer_address }}</td>
+          <td class="table__numeric">{{ customer.discount_rate }}%</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="form__actions">
+    <a class="button button--secondary" href="{% url 'psys:customer-menu' %}">メニューに戻る</a>
+  </div>
+</section>
+{% endblock %}

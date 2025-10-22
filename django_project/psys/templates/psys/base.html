@@ -1,0 +1,56 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% block title %}販売支援システム{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{% static 'psys/css/app.css' %}" />
+    {% block extra_head %}{% endblock %}
+  </head>
+  <body>
+    <div class="layout">
+      <header class="header">
+        <div class="header__title">
+          <span class="header__logo">Wellness Foods</span>
+          <h1 class="header__text">販売支援システム</h1>
+        </div>
+        <nav class="header__nav">
+          {% block header_nav %}
+          <a class="nav-link" href="{% url 'psys:top' %}">トップ</a>
+          <a class="nav-link" href="{% url 'psys:main-menu' %}">メインメニュー</a>
+          <a class="nav-link" href="{% url 'psys:customer-menu' %}">得意先管理</a>
+          <a class="nav-link" href="{% url 'psys:reports-monthly' %}">得意先別集計</a>
+          {% if employee %}
+          <span class="header__user">{{ employee.employee_name }} ({{ employee.employee_no }})</span>
+          <a class="nav-link" href="{% url 'psys:logout' %}">ログアウト</a>
+          {% else %}
+          <a class="nav-link" href="{% url 'psys:login' %}">ログイン</a>
+          {% endif %}
+          {% endblock %}
+        </nav>
+      </header>
+      <main class="main">
+        {% if messages %}
+        <ul class="messages" role="status" aria-live="polite">
+          {% for message in messages %}
+          <li class="messages__item messages__item--{{ message.tags }}">{{ message }}</li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+        {% block content %}{% endblock %}
+      </main>
+      <footer class="footer">
+        <p class="footer__copy">&copy; {% now "Y" %} Wellness Foods. All rights reserved.</p>
+      </footer>
+    </div>
+    <script src="{% static 'psys/js/app.js' %}" defer></script>
+    {% block extra_script %}{% endblock %}
+  </body>
+</html>

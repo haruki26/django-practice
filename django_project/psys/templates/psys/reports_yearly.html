@@ -1,0 +1,57 @@
+{% extends "psys/base.html" %}
+{% block title %}年次受注集計 | 販売支援システム{% endblock %}
+{% block content %}
+<section aria-labelledby="yearly-title" class="grid-two">
+  <div>
+    <h2 id="yearly-title">年次受注集計</h2>
+    <p class="section__description">集計年を入力して得意先ごとの年間受注金額を確認します。</p>
+    <form method="post" class="form">
+      {% csrf_token %}
+      {% for field in form %}
+      <div class="form__group">
+        <label class="form__label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {{ field }}
+        {% for error in field.errors %}
+        <span class="form__hint" role="alert">{{ error }}</span>
+        {% endfor %}
+      </div>
+      {% endfor %}
+      <div class="form__actions">
+        <button type="submit" class="button button--primary">集計する</button>
+        <a class="button button--secondary" href="{% url 'psys:reports-monthly' %}">月次集計へ</a>
+      </div>
+    </form>
+  </div>
+  <div>
+    <h3>集計結果</h3>
+    {% if summaries %}
+    <div class="table-wrapper">
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">得意先コード</th>
+            <th scope="col">得意先名</th>
+            <th scope="col" class="table__numeric">年間合計(税込)</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for summary in summaries %}
+          <tr>
+            <td>{{ summary.customer_code }}</td>
+            <td>{{ summary.customer_name }}</td>
+            <td class="table__numeric">¥{{ summary.total_amount|floatformat:2 }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div class="summary-card">
+      <p class="summary-card__title">総計</p>
+      <p class="summary-card__value">¥{{ total|floatformat:2 }}</p>
+    </div>
+    {% else %}
+    <p class="section__description">集計結果はまだ表示されていません。</p>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

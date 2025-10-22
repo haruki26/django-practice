@@ -1,0 +1,26 @@
+{% extends "psys/base.html" %}
+{% block title %}メインメニュー | 販売支援システム{% endblock %}
+{% block content %}
+<section>
+  <header class="section__header">
+    <h2>メインメニュー</h2>
+    <p class="section__description">利用したい機能を選択してください。</p>
+  </header>
+  <div class="card-grid">
+    {% for item in menu_items %}
+    <article class="card{% if item.disabled %} card--disabled{% endif %}">
+      <h3 class="card__title">{{ item.title }}</h3>
+      <p class="card__description">{{ item.description }}</p>
+      {% if item.disabled %}
+      <span class="badge">準備中</span>
+      {% else %}
+      <a class="button button--primary" href="{{ item.url }}">開く</a>
+      {% endif %}
+    </article>
+    {% endfor %}
+  </div>
+  <div class="form__actions">
+    <a class="button button--secondary" href="{% url 'psys:logout' %}">ログアウト</a>
+  </div>
+</section>
+{% endblock %}

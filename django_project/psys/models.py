@@ -10,10 +10,10 @@ from django.db import models
 
 class Customer(models.Model):
     customer_code = models.CharField(primary_key=True, max_length=6)
-    customer_name = models.CharField(max_length=32, blank=True, null=True)
-    customer_telno = models.CharField(max_length=13, blank=True, null=True)
-    customer_postalcode = models.CharField(max_length=8, blank=True, null=True)
-    customer_address = models.CharField(max_length=40, blank=True, null=True)
+    customer_name = models.CharField(max_length=32, blank=True, default="")
+    customer_telno = models.CharField(max_length=13, blank=True, default="")
+    customer_postalcode = models.CharField(max_length=8, blank=True, default="")
+    customer_address = models.CharField(max_length=40, blank=True, default="")
     discount_rate = models.IntegerField(blank=True, null=True)
     delete_flag = models.IntegerField()
 
@@ -32,8 +32,8 @@ class CustomerNumbering(models.Model):
 
 class Employee(models.Model):
     employee_no = models.CharField(primary_key=True, max_length=6)
-    employee_name = models.CharField(max_length=32, blank=True, null=True)
-    password = models.CharField(max_length=8, blank=True, null=True)
+    employee_name = models.CharField(max_length=32, blank=True, default="")
+    password = models.CharField(max_length=8, blank=True, default="")
 
     class Meta:
         managed = False
@@ -42,7 +42,7 @@ class Employee(models.Model):
 
 class Item(models.Model):
     item_code = models.CharField(primary_key=True, max_length=6)
-    item_name = models.CharField(max_length=32, blank=True, null=True)
+    item_name = models.CharField(max_length=32, blank=True, default="")
     price = models.IntegerField(blank=True, null=True)
     stock = models.IntegerField(blank=True, null=True)
 
@@ -52,7 +52,14 @@ class Item(models.Model):
 
 
 class OrderDetails(models.Model):
-    order_no = models.OneToOneField("Orders", models.DO_NOTHING, db_column="order_no", primary_key=True)  # The composite primary key (order_no, item_code) found, that is not supported. The first column is selected.
+    order_no = models.OneToOneField(
+        "Orders",
+        models.DO_NOTHING,
+        db_column="order_no",
+        primary_key=True,
+    )
+    # The composite primary key (order_no, item_code) found, that is not supported.
+    # The first column is selected.
     item_code = models.ForeignKey(Item, models.DO_NOTHING, db_column="item_code")
     order_num = models.IntegerField(blank=True, null=True)
     order_price = models.IntegerField(blank=True, null=True)

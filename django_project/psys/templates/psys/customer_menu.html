@@ -1,0 +1,18 @@
+{% extends "psys/base.html" %}
+{% block title %}得意先管理メニュー | 販売支援システム{% endblock %}
+{% block content %}
+<section>
+  <header class="section__header">
+    <h2>得意先管理メニュー</h2>
+    <p class="section__description">実装予定の各操作にアクセスできます。</p>
+  </header>
+  <div class="menu-list">
+    {% for label, url in actions %}
+    <a class="menu-list__item" href="{{ url }}">{{ label }}</a>
+    {% endfor %}
+  </div>
+  <div class="form__actions">
+    <a class="button button--secondary" href="{% url 'psys:main-menu' %}">メインメニューに戻る</a>
+  </div>
+</section>
+{% endblock %}

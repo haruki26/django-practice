@@ -5,89 +5,96 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Customer',
+            name="Customer",
             fields=[
-                ('customer_code', models.CharField(max_length=6, primary_key=True, serialize=False)),
-                ('customer_name', models.CharField(blank=True, max_length=32, null=True)),
-                ('customer_telno', models.CharField(blank=True, max_length=13, null=True)),
-                ('customer_postalcode', models.CharField(blank=True, max_length=8, null=True)),
-                ('customer_address', models.CharField(blank=True, max_length=40, null=True)),
-                ('discount_rate', models.IntegerField(blank=True, null=True)),
-                ('delete_flag', models.IntegerField()),
+                ("customer_code", models.CharField(max_length=6, primary_key=True, serialize=False)),
+                ("customer_name", models.CharField(blank=True, max_length=32, null=True)),
+                ("customer_telno", models.CharField(blank=True, max_length=13, null=True)),
+                ("customer_postalcode", models.CharField(blank=True, max_length=8, null=True)),
+                ("customer_address", models.CharField(blank=True, max_length=40, null=True)),
+                ("discount_rate", models.IntegerField(blank=True, null=True)),
+                ("delete_flag", models.IntegerField()),
             ],
             options={
-                'db_table': 'customer',
-                'managed': False,
+                "db_table": "customer",
+                "managed": False,
             },
         ),
         migrations.CreateModel(
-            name='CustomerNumbering',
+            name="CustomerNumbering",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('customer_code', models.IntegerField()),
+                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("customer_code", models.IntegerField()),
             ],
             options={
-                'db_table': 'customer_numbering',
-                'managed': False,
+                "db_table": "customer_numbering",
+                "managed": False,
             },
         ),
         migrations.CreateModel(
-            name='Employee',
+            name="Employee",
             fields=[
-                ('employee_no', models.CharField(max_length=6, primary_key=True, serialize=False)),
-                ('employee_name', models.CharField(blank=True, max_length=32, null=True)),
-                ('password', models.CharField(blank=True, max_length=8, null=True)),
+                ("employee_no", models.CharField(max_length=6, primary_key=True, serialize=False)),
+                ("employee_name", models.CharField(blank=True, max_length=32, null=True)),
+                ("password", models.CharField(blank=True, max_length=8, null=True)),
             ],
             options={
-                'db_table': 'employee',
-                'managed': False,
+                "db_table": "employee",
+                "managed": False,
             },
         ),
         migrations.CreateModel(
-            name='Item',
+            name="Item",
             fields=[
-                ('item_code', models.CharField(max_length=6, primary_key=True, serialize=False)),
-                ('item_name', models.CharField(blank=True, max_length=32, null=True)),
-                ('price', models.IntegerField(blank=True, null=True)),
-                ('stock', models.IntegerField(blank=True, null=True)),
+                ("item_code", models.CharField(max_length=6, primary_key=True, serialize=False)),
+                ("item_name", models.CharField(blank=True, max_length=32, null=True)),
+                ("price", models.IntegerField(blank=True, null=True)),
+                ("stock", models.IntegerField(blank=True, null=True)),
             ],
             options={
-                'db_table': 'item',
-                'managed': False,
+                "db_table": "item",
+                "managed": False,
             },
         ),
         migrations.CreateModel(
-            name='Orders',
+            name="Orders",
             fields=[
-                ('order_no', models.CharField(max_length=6, primary_key=True, serialize=False)),
-                ('total_price', models.IntegerField(blank=True, null=True)),
-                ('detail_num', models.IntegerField(blank=True, null=True)),
-                ('deliver_date', models.DateField(blank=True, null=True)),
-                ('order_date', models.DateField(blank=True, null=True)),
+                ("order_no", models.CharField(max_length=6, primary_key=True, serialize=False)),
+                ("total_price", models.IntegerField(blank=True, null=True)),
+                ("detail_num", models.IntegerField(blank=True, null=True)),
+                ("deliver_date", models.DateField(blank=True, null=True)),
+                ("order_date", models.DateField(blank=True, null=True)),
             ],
             options={
-                'db_table': 'orders',
-                'managed': False,
+                "db_table": "orders",
+                "managed": False,
             },
         ),
         migrations.CreateModel(
-            name='OrderDetails',
+            name="OrderDetails",
             fields=[
-                ('order_no', models.OneToOneField(db_column='order_no', on_delete=django.db.models.deletion.DO_NOTHING, primary_key=True, serialize=False, to='psys.orders')),
-                ('order_num', models.IntegerField(blank=True, null=True)),
-                ('order_price', models.IntegerField(blank=True, null=True)),
+                (
+                    "order_no",
+                    models.OneToOneField(
+                        db_column="order_no",
+                        on_delete=django.db.models.deletion.DO_NOTHING,
+                        primary_key=True,
+                        serialize=False,
+                        to="psys.orders",
+                    ),
+                ),
+                ("order_num", models.IntegerField(blank=True, null=True)),
+                ("order_price", models.IntegerField(blank=True, null=True)),
             ],
             options={
-                'db_table': 'order_details',
-                'managed': False,
+                "db_table": "order_details",
+                "managed": False,
             },
         ),
     ]
