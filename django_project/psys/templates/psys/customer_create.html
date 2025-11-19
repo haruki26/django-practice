@@ -5,7 +5,7 @@
   <div>
     <h2 id="create-title">得意先登録</h2>
     <p class="section__description">
-      入力内容は保存されず、確認用にカードが生成されます。
+      入力した内容がシステムに登録され、結果が右側に表示されます。
     </p>
     <form method="post" class="form">
       {% csrf_token %}
@@ -22,27 +22,35 @@
       </div>
       {% endfor %}
       <div class="form__actions">
-        <button type="submit" class="button button--primary">登録(モック)</button>
+        <button type="submit" class="button button--primary">登録</button>
         <a class="button button--secondary" href="{% url 'psys:customer-menu' %}">メニューに戻る</a>
       </div>
     </form>
   </div>
   <div>
-    <h3>登録プレビュー</h3>
+    <h3>登録結果</h3>
     {% if customer %}
     <div class="summary-card">
-      <p class="summary-card__title">仮登録情報</p>
+      <p class="summary-card__title">登録済み得意先</p>
       <p class="summary-card__value">{{ customer.customer_name }}</p>
       <dl class="definition-list">
         <div class="definition-list__row"><dt>得意先コード</dt><dd>{{ customer.customer_code }}</dd></div>
         <div class="definition-list__row"><dt>電話番号</dt><dd>{{ customer.customer_telno }}</dd></div>
         <div class="definition-list__row"><dt>郵便番号</dt><dd>{{ customer.customer_postalcode }}</dd></div>
         <div class="definition-list__row"><dt>住所</dt><dd>{{ customer.customer_address }}</dd></div>
-        <div class="definition-list__row"><dt>割引率</dt><dd>{{ customer.discount_rate }}%</dd></div>
+        <div class="definition-list__row"><dt>割引率</dt>
+          <dd>
+            {% if customer.discount_rate is not None %}
+            {{ customer.discount_rate }}%
+            {% else %}
+            -
+            {% endif %}
+          </dd>
+        </div>
       </dl>
     </div>
     {% else %}
-    <p class="section__description">入力するとここに仮登録情報が表示されます。</p>
+    <p class="section__description">登録が完了するとここに結果が表示されます。</p>
     {% endif %}
   </div>
 </section>

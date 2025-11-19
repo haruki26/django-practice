@@ -11,9 +11,23 @@ from django.views.generic import FormView, TemplateView
 from django.views.generic.base import ContextMixin
 from utils.logger import get_logger
 
-from psys.services.customers import CustomerNotFoundError, CustomerServiceError, get_customer_by_code
+from psys.services.customers import (
+    CustomerNotFoundError,
+    CustomerPayload,
+    CustomerServiceError,
+    create_customer,
+    delete_customer,
+    get_customer_by_code,
+    list_active_customers,
+    update_customer,
+)
+from psys.services.reports import (
+    ReportServiceError,
+    get_item_summary,
+    get_monthly_summary,
+    get_yearly_summary,
+)
 
-from . import mock_data
 from .forms import (
     CustomerCodeForm,
     CustomerForm,
@@ -33,6 +47,8 @@ if TYPE_CHECKING:
     from django.forms import BaseForm
     from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
     from django.template.response import TemplateResponse
+
+    from psys.models import Customer
 else:  # pragma: no cover - runtime import not required
     SessionBase = object
     HttpRequest = object
@@ -146,7 +162,7 @@ class EmployeeSessionRequiredMixin(ContextMixin, View):
 
 
 class TopView(TemplateView):
-    """Public top page that introduces the mock system."""
+    """Public top page that introduces the test environment."""
 
     template_name = "psys/top.html"
 
@@ -155,12 +171,16 @@ class TopView(TemplateView):
         context = super().get_context_data(**kwargs)
         context["announcements"] = [
             {
-                "title": "販売支援システム モックUI",
-                "body": "本画面は操作性確認用のモックです。実データとは連動していません。",
+                "title": "販売支援システム テスト環境",
+                "body": "得意先・受注データは MySQL 上の検証用データベースと連携しています。",
             },
             {
-                "title": "リリース予定",
-                "body": "得意先管理機能は 2025 年第 4 四半期にリリース予定です。",
+                "title": "開発ロードマップ",
+                "body": "受注管理とオンライン販売機能を段階的に追加予定です。",
+            },
+            {
+                "title": "データ更新について",
+                "body": "登録・削除・集計の結果は即時に画面へ反映されます。",
             },
         ]
         context["employee"] = _get_employee(self.request)
@@ -270,7 +290,7 @@ class CustomerMenuView(EmployeeSessionRequiredMixin, TemplateView):
             ("得意先検索", reverse_lazy("psys:customers-search")),
             ("得意先登録", reverse_lazy("psys:customers-create")),
             ("得意先削除", reverse_lazy("psys:customers-delete")),
-            ("得意先変更", reverse_lazy("psys:customers-update", kwargs={"customer_code": "C00001"})),
+            ("得意先変更", reverse_lazy("psys:customers-update", kwargs={"customer_code": "RA0001"})),
             ("得意先一覧", reverse_lazy("psys:customers-list")),
         ]
         return context
@@ -304,7 +324,11 @@ class CustomerSearchView(EmployeeSessionRequiredMixin, TemplateResponseFormView)
                 extra={"customer_code": customer_code},
             )
             return cast("TemplateResponse", self.form_invalid(search_form))
-        context = self.get_context_data(form=search_form, customer=record)
+        context = self.get_context_data(
+            form=search_form,
+            customer=record,
+            update_url=reverse_lazy("psys:customers-update", kwargs={"customer_code": record.customer_code}),
+        )
         messages.success(self.request, f"{record.customer_name} の情報を表示しています。")
         logger.info("Displayed customer", extra={"customer_code": customer_code})
         response = self.render_to_response(context)
@@ -312,58 +336,102 @@ class CustomerSearchView(EmployeeSessionRequiredMixin, TemplateResponseFormView)
 
 
 class CustomerCreateView(EmployeeSessionRequiredMixin, TemplateResponseFormView):
-    """Mock customer registration screen."""
+    """Customer registration screen backed by MySQL."""
 
     template_name = "psys/customer_create.html"
     form_class = CustomerForm
 
     def form_valid(self, form: BaseForm) -> TemplateResponse:
-        """Pretend to register a new customer and show confirmation."""
+        """Persist the new customer and display the saved record."""
         customer_form = cast("CustomerForm", form)
-        customer_code = "C9" + customer_form.cleaned_data["customer_name"][:4].upper()
-        record = mock_data.CustomerRecord(
-            customer_code=customer_code[:6].ljust(6, "0"),
+        payload = CustomerPayload(
             customer_name=customer_form.cleaned_data["customer_name"],
             customer_telno=customer_form.cleaned_data["customer_telno"],
             customer_postalcode=customer_form.cleaned_data["customer_postalcode"],
             customer_address=customer_form.cleaned_data["customer_address"],
             discount_rate=customer_form.cleaned_data["discount_rate"],
         )
+        try:
+            record = create_customer(payload=payload)
+        except CustomerServiceError as error:
+            customer_form.add_error(None, str(error))
+            messages.error(self.request, str(error))
+            logger.warning("Customer registration failed", extra={"errors": customer_form.errors})
+            return cast("TemplateResponse", self.form_invalid(customer_form))
         context = self.get_context_data(form=customer_form, customer=record)
-        messages.success(self.request, f"得意先コード {record.customer_code} を仮登録しました。")
-        logger.info("Mock customer registered", extra={"customer_code": record.customer_code})
+        messages.success(self.request, f"得意先コード {record.customer_code} を登録しました。")
+        logger.info("Customer registered", extra={"customer_code": record.customer_code})
         response = self.render_to_response(context)
         return cast("TemplateResponse", response)
 
 
 class CustomerDeleteView(EmployeeSessionRequiredMixin, TemplateResponseFormView):
-    """Mock customer deletion screen that confirms the target record."""
+    """Customer deletion screen that updates the delete flag."""
 
     template_name = "psys/customer_delete.html"
     form_class = CustomerCodeForm
 
     def form_valid(self, form: BaseForm) -> TemplateResponse:
-        """Show the target customer and a deletion notice."""
+        """Delete the requested customer and show the deleted record."""
         code_form = cast("CustomerCodeForm", form)
         customer_code = code_form.cleaned_data["customer_code"].upper()
-        record = mock_data.get_customer(code=customer_code)
+        try:
+            record = delete_customer(customer_code=customer_code)
+        except CustomerNotFoundError as error:
+            code_form.add_error("customer_code", str(error))
+            messages.warning(self.request, str(error))
+            logger.info("Customer deletion target not found", extra={"customer_code": customer_code})
+            return cast("TemplateResponse", self.form_invalid(code_form))
+        except CustomerServiceError as error:
+            code_form.add_error(None, str(error))
+            messages.error(self.request, str(error))
+            logger.exception("Customer deletion failed", extra={"customer_code": customer_code})
+            return cast("TemplateResponse", self.form_invalid(code_form))
         context = self.get_context_data(form=code_form, customer=record)
-        messages.warning(self.request, f"{record.customer_name} を削除対象としてマークしました。")
-        logger.info("Mock customer deletion", extra={"customer_code": customer_code})
+        messages.success(self.request, f"{record.customer_name} を削除しました。")
+        logger.info("Customer deleted", extra={"customer_code": customer_code})
         response = self.render_to_response(context)
         return cast("TemplateResponse", response)
 
 
 class CustomerUpdateView(EmployeeSessionRequiredMixin, TemplateResponseFormView):
-    """Mock customer update screen."""
+    """Customer update screen."""
 
     template_name = "psys/customer_update.html"
     form_class = CustomerForm
 
+    def dispatch(self, request: HttpRequest, *args: object, **kwargs: object) -> HttpResponse:
+        """Ensure the target customer exists before continuing."""
+        try:
+            self._customer_cache = self._get_customer()
+        except CustomerNotFoundError as error:
+            messages.error(request, str(error))
+            response = redirect("psys:customers-search")
+            return cast("HttpResponse", response)
+        except CustomerServiceError as error:
+            messages.error(request, str(error))
+            response = redirect("psys:customer-menu")
+            return cast("HttpResponse", response)
+        return super().dispatch(request, *args, **kwargs)
+
+    def _get_customer_code(self) -> str:
+        code = str(self.kwargs.get("customer_code", "")).strip().upper()
+        if not code:
+            message = "得意先コードが指定されていません。"
+            raise CustomerNotFoundError(message)
+        return code
+
+    def _get_customer(self) -> Customer:
+        if hasattr(self, "_customer_cache"):
+            return cast("Customer", self._customer_cache)
+        code = self._get_customer_code()
+        customer = get_customer_by_code(customer_code=code)
+        self._customer_cache = customer
+        return customer
+
     def get_initial(self) -> dict[str, object]:
-        """Populate the form with the current mock data."""
-        customer_code = self.kwargs.get("customer_code", "C00001")
-        record = mock_data.get_customer(code=str(customer_code))
+        """Populate the form with the current database values."""
+        record = self._get_customer()
         return {
             "customer_name": record.customer_name,
             "customer_telno": record.customer_telno,
@@ -373,45 +441,58 @@ class CustomerUpdateView(EmployeeSessionRequiredMixin, TemplateResponseFormView)
         }
 
     def get_context_data(self, **kwargs: object) -> dict[str, object]:
-        """Include the current mock customer for preview on initial display."""
+        """Include the current customer for preview on initial display."""
         context = super().get_context_data(**kwargs)
-        customer_code = self.kwargs.get("customer_code", "C00001")
-        context.setdefault("customer", mock_data.get_customer(code=str(customer_code)))
+        context.setdefault("customer", self._get_customer())
         return context
 
     def form_valid(self, form: BaseForm) -> TemplateResponse:
-        """Return the updated values without touching the database."""
+        """Persist the updated values and show the result."""
         customer_form = cast("CustomerForm", form)
-        customer_code = self.kwargs.get("customer_code", "C00001")
-        record = mock_data.CustomerRecord(
-            customer_code=str(customer_code),
+        payload = CustomerPayload(
             customer_name=customer_form.cleaned_data["customer_name"],
             customer_telno=customer_form.cleaned_data["customer_telno"],
             customer_postalcode=customer_form.cleaned_data["customer_postalcode"],
             customer_address=customer_form.cleaned_data["customer_address"],
             discount_rate=customer_form.cleaned_data["discount_rate"],
         )
+        customer_code = self._get_customer_code()
+        try:
+            record = update_customer(customer_code=customer_code, payload=payload)
+        except CustomerNotFoundError as error:
+            customer_form.add_error(None, str(error))
+            messages.warning(self.request, str(error))
+            logger.info("Customer update target missing", extra={"customer_code": customer_code})
+            return cast("TemplateResponse", self.form_invalid(customer_form))
+        except CustomerServiceError as error:
+            customer_form.add_error(None, str(error))
+            messages.error(self.request, str(error))
+            logger.exception("Customer update failed", extra={"customer_code": customer_code})
+            return cast("TemplateResponse", self.form_invalid(customer_form))
+        self._customer_cache = record
         context = self.get_context_data(form=customer_form, customer=record)
         messages.success(self.request, f"{record.customer_name} の情報を更新しました。")
-        logger.info("Mock customer updated", extra={"customer_code": customer_code})
+        logger.info("Customer updated", extra={"customer_code": customer_code})
         response = self.render_to_response(context)
         return cast("TemplateResponse", response)
 
 
 class CustomerListView(EmployeeSessionRequiredMixin, TemplateView):
-    """Simple list of mock customers."""
+    """Simple list of registered customers."""
 
     template_name = "psys/customer_list.html"
 
     def get_context_data(self, **kwargs: object) -> dict[str, object]:
-        """Provide all mock customers to the template."""
+        """Provide all active customers to the template."""
         context = super().get_context_data(**kwargs)
-        context["customers"] = mock_data.get_customers()
+        customers = list(list_active_customers())
+        context["customers"] = customers
+        context["has_customers"] = bool(customers)
         return context
 
 
 class MonthlyReportView(EmployeeSessionRequiredMixin, TemplateResponseFormView):
-    """Monthly aggregation mock screen."""
+    """Monthly aggregation screen."""
 
     template_name = "psys/reports_monthly.html"
     form_class = MonthlyReportForm
@@ -421,7 +502,13 @@ class MonthlyReportView(EmployeeSessionRequiredMixin, TemplateResponseFormView):
         monthly_form = cast("MonthlyReportForm", form)
         year = monthly_form.cleaned_data["year"]
         month = monthly_form.cleaned_data["month"]
-        summaries, total = mock_data.get_monthly_summary(year=year, month=month)
+        try:
+            summaries, total = get_monthly_summary(year=year, month=month)
+        except ReportServiceError as error:
+            monthly_form.add_error(None, str(error))
+            messages.error(self.request, str(error))
+            logger.exception("Monthly report failed", extra={"year": year, "month": month})
+            return cast("TemplateResponse", self.form_invalid(monthly_form))
         context = self.get_context_data(form=monthly_form, summaries=summaries, total=total)
         messages.success(self.request, f"{year}年{month}月の集計結果を表示しています。")
         logger.info("Monthly report displayed", extra={"year": year, "month": month})
@@ -430,7 +517,7 @@ class MonthlyReportView(EmployeeSessionRequiredMixin, TemplateResponseFormView):
 
 
 class YearlyReportView(EmployeeSessionRequiredMixin, TemplateResponseFormView):
-    """Yearly aggregation mock screen."""
+    """Yearly aggregation screen."""
 
     template_name = "psys/reports_yearly.html"
     form_class = YearlyReportForm
@@ -439,7 +526,13 @@ class YearlyReportView(EmployeeSessionRequiredMixin, TemplateResponseFormView):
         """Display aggregated amounts per customer for the selected year."""
         yearly_form = cast("YearlyReportForm", form)
         year = yearly_form.cleaned_data["year"]
-        summaries, total = mock_data.get_yearly_summary(year=year)
+        try:
+            summaries, total = get_yearly_summary(year=year)
+        except ReportServiceError as error:
+            yearly_form.add_error(None, str(error))
+            messages.error(self.request, str(error))
+            logger.exception("Yearly report failed", extra={"year": year})
+            return cast("TemplateResponse", self.form_invalid(yearly_form))
         context = self.get_context_data(form=yearly_form, summaries=summaries, total=total)
         messages.success(self.request, f"{year}年の集計結果を表示しています。")
         logger.info("Yearly report displayed", extra={"year": year})
@@ -448,7 +541,7 @@ class YearlyReportView(EmployeeSessionRequiredMixin, TemplateResponseFormView):
 
 
 class ItemReportView(EmployeeSessionRequiredMixin, TemplateResponseFormView):
-    """Item-based aggregation mock screen."""
+    """Item-based aggregation screen."""
 
     template_name = "psys/reports_by_item.html"
     form_class = ItemReportForm
@@ -457,7 +550,23 @@ class ItemReportView(EmployeeSessionRequiredMixin, TemplateResponseFormView):
         """Display item level aggregation for the specified customer."""
         item_form = cast("ItemReportForm", form)
         customer_code = item_form.cleaned_data["customer_code"].upper()
-        customer, rows, total = mock_data.get_item_summary(customer_code=customer_code)
+        try:
+            customer, rows, total = get_item_summary(customer_code=customer_code)
+        except CustomerNotFoundError as error:
+            item_form.add_error("customer_code", str(error))
+            messages.warning(self.request, str(error))
+            logger.info("Item report customer missing", extra={"customer_code": customer_code})
+            return cast("TemplateResponse", self.form_invalid(item_form))
+        except CustomerServiceError as error:
+            item_form.add_error(None, str(error))
+            messages.error(self.request, str(error))
+            logger.exception("Item report customer lookup failed", extra={"customer_code": customer_code})
+            return cast("TemplateResponse", self.form_invalid(item_form))
+        except ReportServiceError as error:
+            item_form.add_error(None, str(error))
+            messages.error(self.request, str(error))
+            logger.exception("Item report aggregation failed", extra={"customer_code": customer_code})
+            return cast("TemplateResponse", self.form_invalid(item_form))
         context = self.get_context_data(form=item_form, customer=customer, rows=rows, total=total)
         messages.success(self.request, f"{customer.customer_name} の商品別集計を表示しています。")
         logger.info("Item report displayed", extra={"customer_code": customer_code})

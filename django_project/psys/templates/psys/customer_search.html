@@ -33,11 +33,24 @@
         <div class="definition-list__row"><dt>電話番号</dt><dd>{{ customer.customer_telno }}</dd></div>
         <div class="definition-list__row"><dt>郵便番号</dt><dd>{{ customer.customer_postalcode }}</dd></div>
         <div class="definition-list__row"><dt>住所</dt><dd>{{ customer.customer_address }}</dd></div>
-        <div class="definition-list__row"><dt>割引率</dt><dd>{{ customer.discount_rate }}%</dd></div>
+        <div class="definition-list__row"><dt>割引率</dt>
+          <dd>
+            {% if customer.discount_rate is not None %}
+            {{ customer.discount_rate }}%
+            {% else %}
+            -
+            {% endif %}
+          </dd>
+        </div>
       </dl>
+      {% if update_url %}
+      <div class="form__actions">
+        <a class="button button--primary" href="{{ update_url }}">この得意先を変更</a>
+      </div>
+      {% endif %}
     </div>
     {% else %}
-    <p class="section__description">検索結果は未表示です。コードを入力して検索してください。</p>
+    <p class="section__description">検索結果は未表示です。得意先コードを入力して検索してください。</p>
     {% endif %}
   </div>
 </section>

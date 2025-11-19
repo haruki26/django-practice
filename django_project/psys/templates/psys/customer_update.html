@@ -4,7 +4,7 @@
 <section class="grid-two" aria-labelledby="update-title">
   <div>
     <h2 id="update-title">得意先変更</h2>
-    <p class="section__description">フォームの値を編集すると確認エリアに反映されます。</p>
+    <p class="section__description">フォームの値を編集して更新すると、最新の情報が右側に表示されます。</p>
     <form method="post" class="form">
       {% csrf_token %}
       {% for field in form %}
@@ -20,13 +20,13 @@
       </div>
       {% endfor %}
       <div class="form__actions">
-        <button type="submit" class="button button--primary">更新(モック)</button>
+        <button type="submit" class="button button--primary">更新</button>
         <a class="button button--secondary" href="{% url 'psys:customer-menu' %}">メニューに戻る</a>
       </div>
     </form>
   </div>
   <div>
-    <h3>更新内容プレビュー</h3>
+    <h3>更新結果</h3>
     {% if customer %}
     <div class="summary-card">
       <p class="summary-card__title">{{ customer.customer_code }}</p>
@@ -35,11 +35,19 @@
         <div class="definition-list__row"><dt>電話番号</dt><dd>{{ customer.customer_telno }}</dd></div>
         <div class="definition-list__row"><dt>郵便番号</dt><dd>{{ customer.customer_postalcode }}</dd></div>
         <div class="definition-list__row"><dt>住所</dt><dd>{{ customer.customer_address }}</dd></div>
-        <div class="definition-list__row"><dt>割引率</dt><dd>{{ customer.discount_rate }}%</dd></div>
+        <div class="definition-list__row"><dt>割引率</dt>
+          <dd>
+            {% if customer.discount_rate is not None %}
+            {{ customer.discount_rate }}%
+            {% else %}
+            -
+            {% endif %}
+          </dd>
+        </div>
       </dl>
     </div>
     {% else %}
-    <p class="section__description">初期表示はモックデータです。更新すると結果が表示されます。</p>
+    <p class="section__description">得意先コードを指定してアクセスすると、ここに最新情報が表示されます。</p>
     {% endif %}
   </div>
 </section>

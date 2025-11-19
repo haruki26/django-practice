@@ -4,9 +4,10 @@
 <section aria-labelledby="list-title">
   <header class="section__header">
     <h2 id="list-title">得意先一覧</h2>
-    <p class="section__description">モックデータとして登録されている得意先を表示します。</p>
+    <p class="section__description">データベースに登録されている得意先の一覧を表示します。</p>
   </header>
   <div class="table-wrapper">
+    {% if has_customers %}
     <table class="table">
       <thead>
         <tr>
@@ -26,11 +27,20 @@
           <td>{{ customer.customer_telno }}</td>
           <td>{{ customer.customer_postalcode }}</td>
           <td>{{ customer.customer_address }}</td>
-          <td class="table__numeric">{{ customer.discount_rate }}%</td>
+          <td class="table__numeric">
+            {% if customer.discount_rate is not None %}
+            {{ customer.discount_rate }}%
+            {% else %}
+            -
+            {% endif %}
+          </td>
         </tr>
         {% endfor %}
       </tbody>
     </table>
+    {% else %}
+    <p class="section__description">表示できる得意先が存在しません。</p>
+    {% endif %}
   </div>
   <div class="form__actions">
     <a class="button button--secondary" href="{% url 'psys:customer-menu' %}">メニューに戻る</a>

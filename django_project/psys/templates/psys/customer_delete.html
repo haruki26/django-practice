@@ -4,7 +4,7 @@
 <section class="grid-two" aria-labelledby="delete-title">
   <div>
     <h2 id="delete-title">得意先削除</h2>
-    <p class="section__description">削除対象の得意先コードを入力してください。モックでは実際の削除は行いません。</p>
+    <p class="section__description">削除対象の得意先コードを入力してください。削除すると対象の得意先は参照できなくなります。</p>
     <form method="post" class="form">
       {% csrf_token %}
       {% for field in form %}
@@ -17,16 +17,16 @@
       </div>
       {% endfor %}
       <div class="form__actions">
-        <button type="submit" class="button button--danger">削除対象を確認</button>
+        <button type="submit" class="button button--danger">削除する</button>
         <a class="button button--secondary" href="{% url 'psys:customer-menu' %}">メニューに戻る</a>
       </div>
     </form>
   </div>
   <div>
-    <h3>削除対象</h3>
+    <h3>削除結果</h3>
     {% if customer %}
     <div class="alert alert--warning" role="status">
-      <p>以下の得意先を削除対象としてマークしました。</p>
+      <p>以下の得意先を削除しました。</p>
     </div>
     <div class="summary-card">
       <p class="summary-card__title">得意先情報</p>
@@ -36,11 +36,19 @@
         <div class="definition-list__row"><dt>電話番号</dt><dd>{{ customer.customer_telno }}</dd></div>
         <div class="definition-list__row"><dt>郵便番号</dt><dd>{{ customer.customer_postalcode }}</dd></div>
         <div class="definition-list__row"><dt>住所</dt><dd>{{ customer.customer_address }}</dd></div>
-        <div class="definition-list__row"><dt>割引率</dt><dd>{{ customer.discount_rate }}%</dd></div>
+        <div class="definition-list__row"><dt>割引率</dt>
+          <dd>
+            {% if customer.discount_rate is not None %}
+            {{ customer.discount_rate }}%
+            {% else %}
+            -
+            {% endif %}
+          </dd>
+        </div>
       </dl>
     </div>
     {% else %}
-    <p class="section__description">削除を確認するには得意先コードを入力してください。</p>
+    <p class="section__description">削除を実行すると結果がここに表示されます。</p>
     {% endif %}
   </div>
 </section>
