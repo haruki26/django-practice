@@ -1,8 +1,12 @@
 {% extends "psys/base.html" %}
+{% load static %}
 {% block title %}得意先削除 | 販売支援システム{% endblock %}
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'psys/css/pages/customers.css' %}" />
+{% endblock %}
 {% block content %}
-<section class="grid-two" aria-labelledby="delete-title">
-  <div>
+<section class="page-section grid-two" aria-labelledby="delete-title">
+  <div class="panel">
     <h2 id="delete-title">得意先削除</h2>
     <p class="section__description">削除対象の得意先コードを入力してください。削除すると対象の得意先は参照できなくなります。</p>
     <form method="post" class="form">
@@ -22,7 +26,7 @@
       </div>
     </form>
   </div>
-  <div>
+  <div class="panel">
     <h3>削除結果</h3>
     {% if customer %}
     <div class="alert alert--warning" role="status">

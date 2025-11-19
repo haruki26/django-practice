@@ -1,5 +1,10 @@
 {% extends "psys/base.html" %}
+{% load static %}
 {% block title %}ログイン | 販売支援システム{% endblock %}
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'psys/css/components/cards.css' %}" />
+<link rel="stylesheet" href="{% static 'psys/css/pages/login.css' %}" />
+{% endblock %}
 {% block content %}
 <section class="card login-card">
   <h2 class="card__title">ログイン</h2>

@@ -1,8 +1,12 @@
 {% extends "psys/base.html" %}
+{% load static %}
 {% block title %}得意先検索 | 販売支援システム{% endblock %}
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'psys/css/pages/customers.css' %}" />
+{% endblock %}
 {% block content %}
-<section class="grid-two" aria-labelledby="search-title">
-  <div>
+<section class="page-section grid-two" aria-labelledby="search-title">
+  <div class="panel">
     <h2 id="search-title">得意先検索</h2>
     <p class="section__description">得意先コードを入力すると登録情報を表示します。</p>
     <form method="post" class="form">
@@ -22,7 +26,7 @@
       </div>
     </form>
   </div>
-  <div>
+  <div class="panel">
     <h3>検索結果</h3>
     {% if customer %}
     <div class="summary-card">

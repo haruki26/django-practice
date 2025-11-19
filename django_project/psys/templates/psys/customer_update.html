@@ -1,8 +1,12 @@
 {% extends "psys/base.html" %}
+{% load static %}
 {% block title %}得意先変更 | 販売支援システム{% endblock %}
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'psys/css/pages/customers.css' %}" />
+{% endblock %}
 {% block content %}
-<section class="grid-two" aria-labelledby="update-title">
-  <div>
+<section class="page-section grid-two" aria-labelledby="update-title">
+  <div class="panel">
     <h2 id="update-title">得意先変更</h2>
     <p class="section__description">フォームの値を編集して更新すると、最新の情報が右側に表示されます。</p>
     <form method="post" class="form">
@@ -25,7 +29,7 @@
       </div>
     </form>
   </div>
-  <div>
+  <div class="panel">
     <h3>更新結果</h3>
     {% if customer %}
     <div class="summary-card">

@@ -1,7 +1,11 @@
 {% extends "psys/base.html" %}
+{% load static %}
 {% block title %}メインメニュー | 販売支援システム{% endblock %}
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'psys/css/components/cards.css' %}" />
+{% endblock %}
 {% block content %}
-<section>
+<section class="page-section">
   <header class="section__header">
     <h2>メインメニュー</h2>
     <p class="section__description">利用したい機能を選択してください。</p>

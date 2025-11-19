@@ -11,7 +11,7 @@
       href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="{% static 'psys/css/app.css' %}" />
+    <link rel="stylesheet" href="{% static 'psys/css/base.css' %}" />
     {% block extra_head %}{% endblock %}
   </head>
   <body>
@@ -37,14 +37,16 @@
         </nav>
       </header>
       <main class="main">
-        {% if messages %}
-        <ul class="messages" role="status" aria-live="polite">
-          {% for message in messages %}
-          <li class="messages__item messages__item--{{ message.tags }}">{{ message }}</li>
-          {% endfor %}
-        </ul>
-        {% endif %}
-        {% block content %}{% endblock %}
+        <div class="page-shell">
+          {% if messages %}
+          <ul class="messages" role="status" aria-live="polite">
+            {% for message in messages %}
+            <li class="messages__item messages__item--{{ message.tags }}">{{ message }}</li>
+            {% endfor %}
+          </ul>
+          {% endif %}
+          {% block content %}{% endblock %}
+        </div>
       </main>
       <footer class="footer">
         <p class="footer__copy">&copy; {% now "Y" %} Wellness Foods. All rights reserved.</p>

@@ -1,8 +1,8 @@
 {% extends "psys/base.html" %}
 {% block title %}月別受注集計 | 販売支援システム{% endblock %}
 {% block content %}
-<section aria-labelledby="monthly-title" class="grid-two">
-  <div>
+<section aria-labelledby="monthly-title" class="page-section grid-two">
+  <div class="panel">
     <h2 id="monthly-title">月別受注集計</h2>
     <p class="section__description">対象年月を入力すると、得意先ごとの受注金額を表示します。</p>
     <form method="post" class="form">
@@ -24,7 +24,7 @@
       </div>
     </form>
   </div>
-  <div>
+  <div class="panel">
     <h3>集計結果</h3>
     {% if summaries %}
     <div class="table-wrapper">

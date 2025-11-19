@@ -1,8 +1,8 @@
 {% extends "psys/base.html" %}
 {% block title %}商品別受注集計 | 販売支援システム{% endblock %}
 {% block content %}
-<section aria-labelledby="item-title" class="grid-two">
-  <div>
+<section aria-labelledby="item-title" class="page-section grid-two">
+  <div class="panel">
     <h2 id="item-title">商品別受注集計</h2>
     <p class="section__description">得意先コードを入力すると商品ごとの受注状況を表示します。</p>
     <form method="post" class="form">
@@ -22,7 +22,7 @@
       </div>
     </form>
   </div>
-  <div>
+  <div class="panel">
     <h3>集計結果</h3>
     {% if customer and rows %}
     <div class="summary-card">

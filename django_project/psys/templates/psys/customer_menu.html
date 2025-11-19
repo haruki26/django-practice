@@ -1,7 +1,11 @@
 {% extends "psys/base.html" %}
+{% load static %}
 {% block title %}得意先管理メニュー | 販売支援システム{% endblock %}
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'psys/css/pages/customers.css' %}" />
+{% endblock %}
 {% block content %}
-<section>
+<section class="page-section">
   <header class="section__header">
     <h2>得意先管理メニュー</h2>
     <p class="section__description">実装予定の各操作にアクセスできます。</p>

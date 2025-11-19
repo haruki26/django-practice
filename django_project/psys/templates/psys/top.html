@@ -1,8 +1,14 @@
 {% extends "psys/base.html" %}
+{% load static %}
 {% block title %}トップ | 販売支援システム{% endblock %}
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'psys/css/components/cards.css' %}" />
+<link rel="stylesheet" href="{% static 'psys/css/pages/top.css' %}" />
+{% endblock %}
 {% block content %}
-<section class="hero">
-  <div class="card">
+<section class="page-section">
+  <div class="hero">
+    <div class="card">
     <h2 class="card__title">販売支援システム テスト環境</h2>
     <p class="card__description">
       この環境は MySQL 上の検証データと連携しており、得意先の登録・削除・集計を実際に試すことができます。
@@ -11,9 +17,10 @@
       <a class="button button--primary" href="{% url 'psys:login' %}">ログイン画面へ</a>
       <a class="button button--secondary" href="{% url 'psys:customer-menu' %}">得意先メニュー</a>
     </div>
+    </div>
   </div>
 </section>
-<section>
+<section class="page-section">
   <h3>お知らせ</h3>
   <div class="card-grid">
     {% for announcement in announcements %}

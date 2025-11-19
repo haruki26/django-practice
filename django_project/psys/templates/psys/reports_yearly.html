@@ -1,8 +1,8 @@
 {% extends "psys/base.html" %}
 {% block title %}年次受注集計 | 販売支援システム{% endblock %}
 {% block content %}
-<section aria-labelledby="yearly-title" class="grid-two">
-  <div>
+<section aria-labelledby="yearly-title" class="page-section grid-two">
+  <div class="panel">
     <h2 id="yearly-title">年次受注集計</h2>
     <p class="section__description">集計年を入力して得意先ごとの年間受注金額を確認します。</p>
     <form method="post" class="form">
@@ -22,7 +22,7 @@
       </div>
     </form>
   </div>
-  <div>
+  <div class="panel">
     <h3>集計結果</h3>
     {% if summaries %}
     <div class="table-wrapper">
