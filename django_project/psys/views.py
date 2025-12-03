@@ -19,6 +19,7 @@ from psys.services.customers import (
     delete_customer,
     get_customer_by_code,
     list_active_customers,
+    search_customers_by_name,
     update_customer,
 )
 from psys.services.reports import (
@@ -29,7 +30,6 @@ from psys.services.reports import (
 )
 
 from .forms import (
-    CustomerCodeForm,
     CustomerForm,
     CustomerSearchForm,
     EmployeeLoginForm,
@@ -290,9 +290,23 @@ class CustomerMenuView(EmployeeSessionRequiredMixin, TemplateView):
             ("得意先検索", reverse_lazy("psys:customers-search")),
             ("得意先登録", reverse_lazy("psys:customers-create")),
             ("得意先削除", reverse_lazy("psys:customers-delete")),
-            ("得意先変更", reverse_lazy("psys:customers-update", kwargs={"customer_code": "RA0001"})),
+            ("得意先変更", reverse_lazy("psys:customers-update-select")),
             ("得意先一覧", reverse_lazy("psys:customers-list")),
         ]
+        return context
+
+
+class CustomerUpdateSelectionView(EmployeeSessionRequiredMixin, TemplateView):
+    """Intermediate screen for selecting the customer to edit."""
+
+    template_name = "psys/customer_update_select.html"
+
+    def get_context_data(self, **kwargs: object) -> dict[str, object]:
+        """Provide active customers for selection before editing."""
+        context = super().get_context_data(**kwargs)
+        customers = list(list_active_customers())
+        context["customers"] = customers
+        context["has_customers"] = bool(customers)
         return context
 
 
@@ -302,35 +316,97 @@ class CustomerSearchView(EmployeeSessionRequiredMixin, TemplateResponseFormView)
     template_name = "psys/customer_search.html"
     form_class = CustomerSearchForm
 
+    def get_initial(self) -> dict[str, object]:
+        initial = super().get_initial()
+        code = str(self.request.GET.get("customer_code", "")).strip()
+        name = str(self.request.GET.get("customer_name", "")).strip()
+        if code:
+            initial["customer_code"] = code
+        if name:
+            initial["customer_name"] = name
+        return initial
+
+    def get(self, request: HttpRequest, *args: object, **kwargs: object) -> TemplateResponse:
+        customer_code = str(request.GET.get("customer_code", "")).strip()
+        if customer_code:
+            form = self.get_form()
+            return self._search_by_code(cast("CustomerSearchForm", form), customer_code.upper())
+        return super().get(request, *args, **kwargs)
+
     def form_valid(self, form: BaseForm) -> TemplateResponse:
         """Render the page with the matching customer from the database."""
         search_form = cast("CustomerSearchForm", form)
-        customer_code = search_form.cleaned_data["customer_code"].upper()
+        customer_code = str(search_form.cleaned_data.get("customer_code", "")).upper()
+        customer_name = str(search_form.cleaned_data.get("customer_name", "")).strip()
+        if customer_code:
+            return self._search_by_code(search_form, customer_code)
+        return self._search_by_name(search_form, customer_name)
+
+    def _search_by_code(self, form: CustomerSearchForm, customer_code: str) -> TemplateResponse:
         try:
             record = get_customer_by_code(customer_code=customer_code)
         except CustomerNotFoundError as error:
-            search_form.add_error("customer_code", str(error))
+            form.add_error("customer_code", str(error))
             messages.warning(self.request, str(error))
             logger.info(
                 "Customer search returned no results",
                 extra={"customer_code": customer_code},
             )
-            return cast("TemplateResponse", self.form_invalid(search_form))
+            return cast("TemplateResponse", self.form_invalid(form))
         except CustomerServiceError as error:
-            search_form.add_error(None, str(error))
+            form.add_error(None, str(error))
             messages.error(self.request, str(error))
             logger.exception(
                 "Customer search failed due to system error",
                 extra={"customer_code": customer_code},
             )
-            return cast("TemplateResponse", self.form_invalid(search_form))
+            return cast("TemplateResponse", self.form_invalid(form))
         context = self.get_context_data(
-            form=search_form,
+            form=form,
             customer=record,
             update_url=reverse_lazy("psys:customers-update", kwargs={"customer_code": record.customer_code}),
         )
         messages.success(self.request, f"{record.customer_name} の情報を表示しています。")
         logger.info("Displayed customer", extra={"customer_code": customer_code})
+        response = self.render_to_response(context)
+        return cast("TemplateResponse", response)
+
+    def _search_by_name(self, form: CustomerSearchForm, customer_name: str) -> TemplateResponse:
+        try:
+            records = search_customers_by_name(keyword=customer_name)
+        except CustomerNotFoundError as error:
+            form.add_error("customer_name", str(error))
+            messages.warning(self.request, str(error))
+            logger.info(
+                "Customer name search returned no results",
+                extra={"customer_name": customer_name},
+            )
+            return cast("TemplateResponse", self.form_invalid(form))
+        except CustomerServiceError as error:
+            form.add_error(None, str(error))
+            messages.error(self.request, str(error))
+            logger.exception(
+                "Customer name search failed",
+                extra={"customer_name": customer_name},
+            )
+            return cast("TemplateResponse", self.form_invalid(form))
+        if len(records) == 1:
+            record = records[0]
+            context = self.get_context_data(
+                form=form,
+                customer=record,
+                update_url=reverse_lazy("psys:customers-update", kwargs={"customer_code": record.customer_code}),
+            )
+            messages.success(self.request, f"{record.customer_name} の情報を表示しています。")
+        else:
+            context = self.get_context_data(form=form, customers=records)
+            messages.success(
+                self.request, f"{len(records)} 件の得意先が見つかりました。詳細を確認したい行を選択してください。"
+            )
+        logger.info(
+            "Displayed customers by name",
+            extra={"customer_name": customer_name, "hits": len(records)},
+        )
         response = self.render_to_response(context)
         return cast("TemplateResponse", response)
 
@@ -365,33 +441,79 @@ class CustomerCreateView(EmployeeSessionRequiredMixin, TemplateResponseFormView)
         return cast("TemplateResponse", response)
 
 
-class CustomerDeleteView(EmployeeSessionRequiredMixin, TemplateResponseFormView):
-    """Customer deletion screen that updates the delete flag."""
+class CustomerDeleteSelectionView(EmployeeSessionRequiredMixin, TemplateView):
+    """List view for choosing which customer to delete."""
+
+    template_name = "psys/customer_delete_select.html"
+
+    def get_context_data(self, **kwargs: object) -> dict[str, object]:
+        """Provide active customers so the user can choose one to delete."""
+        context = super().get_context_data(**kwargs)
+        customers = list(list_active_customers())
+        context["customers"] = customers
+        context["has_customers"] = bool(customers)
+        return context
+
+
+class CustomerDeleteConfirmView(EmployeeSessionRequiredMixin, TemplateView):
+    """Confirmation screen for deleting a specific customer."""
 
     template_name = "psys/customer_delete.html"
-    form_class = CustomerCodeForm
 
-    def form_valid(self, form: BaseForm) -> TemplateResponse:
-        """Delete the requested customer and show the deleted record."""
-        code_form = cast("CustomerCodeForm", form)
-        customer_code = code_form.cleaned_data["customer_code"].upper()
+    def dispatch(self, request: HttpRequest, *args: object, **kwargs: object) -> HttpResponse:
+        """Ensure the target customer exists before showing the confirmation."""
+        try:
+            self._customer_cache = self._get_customer()
+        except CustomerNotFoundError as error:
+            messages.warning(request, str(error))
+            logger.info(
+                "Customer delete confirmation target missing",
+                extra={"customer_code": kwargs.get("customer_code", "")},
+            )
+            return redirect("psys:customers-delete")
+        except CustomerServiceError as error:
+            messages.error(request, str(error))
+            logger.exception("Customer lookup failed during delete confirmation")
+            return redirect("psys:customer-menu")
+        return super().dispatch(request, *args, **kwargs)
+
+    def _get_customer_code(self) -> str:
+        code = str(self.kwargs.get("customer_code", "")).strip().upper()
+        if not code:
+            message = "得意先コードが指定されていません。"
+            raise CustomerNotFoundError(message)
+        return code
+
+    def _get_customer(self) -> Customer:
+        if hasattr(self, "_customer_cache"):
+            return cast("Customer", self._customer_cache)
+        code = self._get_customer_code()
+        customer = get_customer_by_code(customer_code=code)
+        self._customer_cache = customer
+        return customer
+
+    def get_context_data(self, **kwargs: object) -> dict[str, object]:
+        """Provide the customer details for the confirmation template."""
+        context = super().get_context_data(**kwargs)
+        context.setdefault("customer", self._get_customer())
+        return context
+
+    def post(self, request: HttpRequest, *_args: object, **_kwargs: object) -> HttpResponse:
+        """Delete the customer after confirmation and return to the selection list."""
+        customer_code = self._get_customer_code()
         try:
             record = delete_customer(customer_code=customer_code)
         except CustomerNotFoundError as error:
-            code_form.add_error("customer_code", str(error))
-            messages.warning(self.request, str(error))
-            logger.info("Customer deletion target not found", extra={"customer_code": customer_code})
-            return cast("TemplateResponse", self.form_invalid(code_form))
+            messages.warning(request, str(error))
+            logger.info("Customer deletion target not found on confirmation", extra={"customer_code": customer_code})
+            return redirect("psys:customers-delete")
         except CustomerServiceError as error:
-            code_form.add_error(None, str(error))
-            messages.error(self.request, str(error))
+            messages.error(request, str(error))
             logger.exception("Customer deletion failed", extra={"customer_code": customer_code})
-            return cast("TemplateResponse", self.form_invalid(code_form))
-        context = self.get_context_data(form=code_form, customer=record)
-        messages.success(self.request, f"{record.customer_name} を削除しました。")
+            return redirect("psys:customers-delete")
+        messages.success(request, f"{record.customer_name} を削除しました。")
         logger.info("Customer deleted", extra={"customer_code": customer_code})
-        response = self.render_to_response(context)
-        return cast("TemplateResponse", response)
+        return redirect("psys:customers-delete")
 
 
 class CustomerUpdateView(EmployeeSessionRequiredMixin, TemplateResponseFormView):

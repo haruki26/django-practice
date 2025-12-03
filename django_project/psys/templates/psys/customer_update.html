@@ -25,6 +25,7 @@
       {% endfor %}
       <div class="form__actions">
         <button type="submit" class="button button--primary">更新</button>
+        <a class="button button--secondary" href="{% url 'psys:customers-update-select' %}">別の得意先を選ぶ</a>
         <a class="button button--secondary" href="{% url 'psys:customer-menu' %}">メニューに戻る</a>
       </div>
     </form>

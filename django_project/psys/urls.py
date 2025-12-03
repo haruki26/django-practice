@@ -14,7 +14,13 @@ urlpatterns = [
     path("customers/menu/", views.CustomerMenuView.as_view(), name="customer-menu"),
     path("customers/search/", views.CustomerSearchView.as_view(), name="customers-search"),
     path("customers/new/", views.CustomerCreateView.as_view(), name="customers-create"),
-    path("customers/delete/", views.CustomerDeleteView.as_view(), name="customers-delete"),
+    path("customers/delete/", views.CustomerDeleteSelectionView.as_view(), name="customers-delete"),
+    path(
+        "customers/<str:customer_code>/delete/",
+        views.CustomerDeleteConfirmView.as_view(),
+        name="customers-delete-confirm",
+    ),
+    path("customers/update/", views.CustomerUpdateSelectionView.as_view(), name="customers-update-select"),
     path(
         "customers/<str:customer_code>/edit/",
         views.CustomerUpdateView.as_view(),

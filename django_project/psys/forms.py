@@ -71,16 +71,35 @@ class EmployeeLoginForm(forms.Form):
 
 
 class CustomerSearchForm(forms.Form):
-    """Form for finding a single customer by code."""
+    """Form for finding customers by code or name."""
 
     customer_code = forms.CharField(
         label="得意先コード",
         max_length=6,
         min_length=3,
+        required=False,
         widget=forms.TextInput(
-            attrs={"placeholder": "例: C00001", "inputmode": "text", "class": "form__input"},
+            attrs={"placeholder": "例: RA0001", "inputmode": "text", "class": "form__input"},
         ),
     )
+    customer_name = forms.CharField(
+        label="得意先名",
+        max_length=32,
+        required=False,
+        widget=forms.TextInput(
+            attrs={"placeholder": "例: ウェルネス商事", "class": "form__input"},
+        ),
+    )
+
+    def clean(self) -> dict[str, object]:
+        """Ensure at least one of code or name is provided."""
+        cleaned_data = super().clean()
+        code = cleaned_data.get("customer_code")
+        name = cleaned_data.get("customer_name")
+        if not code and not name:
+            message = "得意先コードまたは得意先名を入力してください。"
+            raise forms.ValidationError(message)
+        return cleaned_data
 
 
 class CustomerCodeForm(forms.Form):

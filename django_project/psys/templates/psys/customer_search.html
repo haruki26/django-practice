@@ -8,7 +8,7 @@
 <section class="page-section grid-two" aria-labelledby="search-title">
   <div class="panel">
     <h2 id="search-title">得意先検索</h2>
-    <p class="section__description">得意先コードを入力すると登録情報を表示します。</p>
+    <p class="section__description">得意先コードまたは得意先名のいずれかを入力すると登録情報を表示します。</p>
     <form method="post" class="form">
       {% csrf_token %}
       {% for field in form %}
@@ -53,8 +53,31 @@
       </div>
       {% endif %}
     </div>
+    {% elif customers %}
+    <div class="table-wrapper">
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">得意先コード</th>
+            <th scope="col">得意先名</th>
+            <th scope="col">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in customers %}
+          <tr>
+            <td>{{ row.customer_code }}</td>
+            <td>{{ row.customer_name }}</td>
+            <td>
+              <a class="button button--primary" href="{% url 'psys:customers-search' %}?customer_code={{ row.customer_code }}">詳細表示</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
     {% else %}
-    <p class="section__description">検索結果は未表示です。得意先コードを入力して検索してください。</p>
+    <p class="section__description">検索結果は未表示です。条件を入力して検索してください。</p>
     {% endif %}
   </div>
 </section>

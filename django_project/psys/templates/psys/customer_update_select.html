@@ -1,0 +1,43 @@
+{% extends "psys/base.html" %}
+{% load static %}
+{% block title %}得意先変更 | 販売支援システム{% endblock %}
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'psys/css/pages/customers.css' %}" />
+{% endblock %}
+{% block content %}
+<section class="page-section" aria-labelledby="select-title">
+  <header class="section__header">
+    <h2 id="select-title">得意先変更</h2>
+    <p class="section__description">変更したい得意先を一覧から選択してください。選択後に編集フォームへ移動します。</p>
+  </header>
+  {% if has_customers %}
+  <div class="table-wrapper">
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">得意先コード</th>
+          <th scope="col">得意先名</th>
+          <th scope="col">操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for customer in customers %}
+        <tr>
+          <td>{{ customer.customer_code }}</td>
+          <td>{{ customer.customer_name }}</td>
+          <td>
+            <a class="button button--primary" href="{% url 'psys:customers-update' customer.customer_code %}">この得意先を編集</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <p class="section__description">編集可能な得意先が見つかりませんでした。</p>
+  {% endif %}
+  <div class="form__actions">
+    <a class="button button--secondary" href="{% url 'psys:customer-menu' %}">メニューに戻る</a>
+  </div>
+</section>
+{% endblock %}

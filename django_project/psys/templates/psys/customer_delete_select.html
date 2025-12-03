@@ -1,0 +1,43 @@
+{% extends "psys/base.html" %}
+{% load static %}
+{% block title %}得意先削除 | 販売支援システム{% endblock %}
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'psys/css/pages/customers.css' %}" />
+{% endblock %}
+{% block content %}
+<section class="page-section" aria-labelledby="delete-select-title">
+  <header class="section__header">
+    <h2 id="delete-select-title">得意先削除</h2>
+    <p class="section__description">削除対象の得意先を一覧から選択してください。確認画面で内容を確認した上で削除できます。</p>
+  </header>
+  {% if has_customers %}
+  <div class="table-wrapper">
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">得意先コード</th>
+          <th scope="col">得意先名</th>
+          <th scope="col">操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for customer in customers %}
+        <tr>
+          <td>{{ customer.customer_code }}</td>
+          <td>{{ customer.customer_name }}</td>
+          <td>
+            <a class="button button--danger" href="{% url 'psys:customers-delete-confirm' customer.customer_code %}">削除する</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <p class="section__description">削除対象の得意先はありません。</p>
+  {% endif %}
+  <div class="form__actions">
+    <a class="button button--secondary" href="{% url 'psys:customer-menu' %}">メニューに戻る</a>
+  </div>
+</section>
+{% endblock %}

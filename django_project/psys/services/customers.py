@@ -55,6 +55,34 @@ def list_active_customers() -> QuerySet[Customer]:
     return Customer.objects.filter(delete_flag=0).order_by("customer_code")  # type: ignore[attr-defined]
 
 
+def search_customers_by_name(keyword: str, limit: int = 50) -> list[Customer]:
+    """Find active customers whose names contain the keyword."""
+    normalized = keyword.strip()
+    if not normalized:
+        message = "得意先名を入力してください。"
+        raise CustomerNotFoundError(message)
+    try:
+        queryset = Customer.objects.filter(  # type: ignore[attr-defined]
+            delete_flag=0,
+            customer_name__icontains=normalized,
+        ).order_by("customer_name", "customer_code")
+        if limit > 0:
+            queryset = queryset[:limit]
+        results = list(queryset)
+    except DatabaseError as exc:  # pragma: no cover - depends on db state
+        logger.exception(
+            "Failed to search customers by name",
+            extra={"keyword": normalized},
+        )
+        message = "得意先名の検索中にエラーが発生しました。"
+        raise CustomerServiceError(message) from exc
+    if not results:
+        message = "該当する得意先が存在しません。"
+        raise CustomerNotFoundError(message)
+    logger.info("Customer search by name", extra={"keyword": normalized, "hits": len(results)})
+    return results
+
+
 def _generate_customer_code(prefix: str = CUSTOMER_CODE_PREFIX) -> str:
     """Generate a new sequential customer code.
 
