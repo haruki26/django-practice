@@ -1,0 +1,8 @@
+site_name: Wellness Foods 販売管理支援システム
+site_description: Wellness Foods 販売管理支援システムのドキュメントサイト
+repo_name: haruki26/django-practice
+repo_url: https://github.com/haruki26/django-practice
+
+theme:
+  name: material
+  language: ja
