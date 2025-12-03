@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import DatabaseError, transaction
@@ -10,9 +10,16 @@ from utils.logger import get_logger
 from psys.models import Customer
 
 if TYPE_CHECKING:  # pragma: no cover - typing support only
+    from contextlib import AbstractContextManager
+
     from django.db.models import QuerySet
 
 logger = get_logger(__name__)
+
+
+def _atomic() -> AbstractContextManager[None]:
+    """Return a typed transaction context manager for static analysis."""
+    return cast("AbstractContextManager[None]", transaction.atomic())
 
 
 class CustomerServiceError(Exception):
@@ -52,7 +59,7 @@ def _normalize_customer_code(customer_code: str) -> str:
 
 def list_active_customers() -> QuerySet[Customer]:
     """Return all active customers ordered by their code."""
-    return Customer.objects.filter(delete_flag=0).order_by("customer_code")  # type: ignore[attr-defined]
+    return Customer.objects.filter(delete_flag=0).order_by("customer_code")
 
 
 def search_customers_by_name(keyword: str, limit: int = 50) -> list[Customer]:
@@ -62,14 +69,14 @@ def search_customers_by_name(keyword: str, limit: int = 50) -> list[Customer]:
         message = "得意先名を入力してください。"
         raise CustomerNotFoundError(message)
     try:
-        queryset = Customer.objects.filter(  # type: ignore[attr-defined]
+        queryset = Customer.objects.filter(
             delete_flag=0,
             customer_name__icontains=normalized,
         ).order_by("customer_name", "customer_code")
         if limit > 0:
             queryset = queryset[:limit]
         results = list(queryset)
-    except DatabaseError as exc:  # pragma: no cover - depends on db state
+    except DatabaseError as exc:
         logger.exception(
             "Failed to search customers by name",
             extra={"keyword": normalized},
@@ -90,7 +97,7 @@ def _generate_customer_code(prefix: str = CUSTOMER_CODE_PREFIX) -> str:
     to ensure the `SELECT ... FOR UPDATE` lock is effective.
     """
     last_code = (
-        Customer.objects.select_for_update()  # type: ignore[attr-defined]
+        Customer.objects.select_for_update()
         .filter(customer_code__startswith=prefix)
         .order_by("-customer_code")
         .values_list("customer_code", flat=True)
@@ -102,7 +109,7 @@ def _generate_customer_code(prefix: str = CUSTOMER_CODE_PREFIX) -> str:
         if suffix.isdigit():
             next_number = int(suffix) + 1
     candidate = f"{prefix}{next_number:04d}"
-    if Customer.objects.filter(customer_code=candidate).exists():  # type: ignore[attr-defined]
+    if Customer.objects.filter(customer_code=candidate).exists():
         logger.error("Generated duplicate customer code", extra={"customer_code": candidate})
         message = "得意先コードの採番に失敗しました。時間をおいて再度お試しください。"
         raise CustomerServiceError(message)
@@ -112,9 +119,9 @@ def _generate_customer_code(prefix: str = CUSTOMER_CODE_PREFIX) -> str:
 def create_customer(payload: CustomerPayload) -> Customer:
     """Create a new customer using the provided payload."""
     try:
-        with transaction.atomic():
+        with _atomic():
             customer_code = _generate_customer_code()
-            customer = Customer.objects.create(  # type: ignore[attr-defined]
+            customer = Customer.objects.create(
                 customer_code=customer_code,
                 customer_name=payload.customer_name,
                 customer_telno=payload.customer_telno,
@@ -138,22 +145,19 @@ def update_customer(customer_code: str, payload: CustomerPayload) -> Customer:
     """Update an existing customer with the supplied payload."""
     normalized_code = _normalize_customer_code(customer_code)
     try:
-        with transaction.atomic():
+        with _atomic():
             customer = get_customer_by_code(customer_code=normalized_code)
-            customer.customer_name = payload.customer_name
-            customer.customer_telno = payload.customer_telno
-            customer.customer_postalcode = payload.customer_postalcode
-            customer.customer_address = payload.customer_address
-            customer.discount_rate = payload.discount_rate
-            customer.save(
-                update_fields=[
-                    "customer_name",
-                    "customer_telno",
-                    "customer_postalcode",
-                    "customer_address",
-                    "discount_rate",
-                ],
+            updated_rows = Customer.objects.filter(customer_code=customer.customer_code, delete_flag=0).update(  # type: ignore[attr-defined]
+                customer_name=payload.customer_name,
+                customer_telno=payload.customer_telno,
+                customer_postalcode=payload.customer_postalcode,
+                customer_address=payload.customer_address,
+                discount_rate=payload.discount_rate,
             )
+            if updated_rows == 0:
+                message = "該当する得意先が存在しません。"
+                raise CustomerNotFoundError(message)
+            customer.refresh_from_db()
     except CustomerNotFoundError:
         raise
     except DatabaseError as exc:  # pragma: no cover - depends on database state
@@ -171,10 +175,15 @@ def delete_customer(customer_code: str) -> Customer:
     """Mark the customer as deleted by setting the delete flag."""
     normalized_code = _normalize_customer_code(customer_code)
     try:
-        with transaction.atomic():
-            customer = get_customer_by_code(customer_code=normalized_code)
-            customer.delete_flag = 1
-            customer.save(update_fields=["delete_flag"])
+        customer = get_customer_by_code(customer_code=normalized_code)
+        with _atomic():
+            updated_rows = Customer.objects.filter(customer_code=customer.customer_code, delete_flag=0).update(  # type: ignore[attr-defined]
+                delete_flag=1,
+            )
+            if updated_rows == 0:
+                message = "該当する得意先が存在しません。"
+                raise CustomerNotFoundError(message)
+            customer.refresh_from_db()
     except CustomerNotFoundError:
         raise
     except DatabaseError as exc:  # pragma: no cover - depends on database state
@@ -200,7 +209,7 @@ def get_customer_by_code(customer_code: str) -> Customer:
     """
     normalized_code = _normalize_customer_code(customer_code)
     try:
-        customer = Customer.objects.get(  # type: ignore[attr-defined]
+        customer = Customer.objects.get(
             customer_code=normalized_code,
             delete_flag=0,
         )
