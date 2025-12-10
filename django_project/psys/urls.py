@@ -27,6 +27,7 @@ urlpatterns = [
         name="customers-update",
     ),
     path("customers/list/", views.CustomerListView.as_view(), name="customers-list"),
+    path("reports/", views.ReportsIndexView.as_view(), name="reports-index"),
     path("reports/monthly/", views.MonthlyReportView.as_view(), name="reports-monthly"),
     path("reports/yearly/", views.YearlyReportView.as_view(), name="reports-yearly"),
     path("reports/by-item/", views.ItemReportView.as_view(), name="reports-by-item"),

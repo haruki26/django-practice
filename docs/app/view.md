@@ -19,6 +19,7 @@
 | ログイン画面 | 従業員番号とパスワードでログインします。|
 | メインメニュー画面 | ログイン後の起点として、得意先管理と得意先別集計カードを表示します。受注管理カードは準備中として無効化します。|
 | 得意先管理メニュー画面 | 得意先管理の各機能へのリンクを一覧表示します。|
+| 得意先別集計メニュー画面 | 月次・年次・商品別の集計画面へのリンクを表示します。|
 | 得意先検索画面 | 得意先コードまたは得意先名で検索し、詳細カードまたは一覧を表示します。|
 | 得意先登録画面 | 新規得意先を登録し、結果をカードで表示します。|
 | 得意先変更対象選択画面 | 変更したい得意先を一覧から選択します。|
@@ -30,7 +31,44 @@
 | 年次受注集計画面 | 指定年の受注を得意先別に集計します。|
 | 商品別受注集計画面 | 得意先コードを指定して商品別の受注明細を集計します。|
 
-※ 得意先別集計はメインメニューから月別受注集計画面へ直接遷移し、画面内リンクで年次・商品別へ遷移します。
+※ 得意先別集計はメインメニューから「得意先別集計メニュー画面」を経由し、各集計画面へ遷移します。
+
+## 画面遷移図
+
+以下の図は主要画面間の遷移関係を示します。トップ画面やメニュー画面から各業務画面へ辿る際の導線を把握するために利用してください。
+
+```mermaid
+flowchart TD
+	Top["トップ画面"] --> Login["ログイン画面"]
+	Top --> CustomerMenu["得意先管理メニュー"]
+	Login --> MainMenu["メインメニュー画面"]
+
+	MainMenu --> CustomerMenu
+	MainMenu --> ReportsMenu["得意先別集計メニュー"]
+	MainMenu -.-> OrdersPlaceholder["受注管理(準備中)"]
+
+	CustomerMenu --> CustomerSearch["得意先検索画面"]
+	CustomerMenu --> CustomerCreate["得意先登録画面"]
+	CustomerMenu --> CustomerUpdateSelect["得意先変更対象選択画面"]
+	CustomerMenu --> CustomerDeleteSelect["得意先削除対象選択画面"]
+	CustomerMenu --> CustomerList["得意先一覧画面"]
+	CustomerMenu --> MainMenu
+
+	CustomerUpdateSelect --> CustomerUpdate["得意先変更画面"]
+	CustomerDeleteSelect --> CustomerDeleteConfirm["得意先削除確認画面"]
+	CustomerSearch --> CustomerUpdate
+	CustomerUpdate --> CustomerMenu
+	CustomerDeleteConfirm --> CustomerMenu
+
+	ReportsMenu --> ReportsMonthly["月別受注集計画面"]
+	ReportsMenu --> ReportsYearly["年次受注集計画面"]
+	ReportsMenu --> ReportsItem["商品別受注集計画面"]
+	ReportsMenu --> MainMenu
+
+	ReportsMonthly --> ReportsYearly
+	ReportsYearly --> ReportsMonthly
+	ReportsItem --> ReportsMonthly
+```
 
 ## 画面詳細
 
@@ -69,6 +107,14 @@
 | --- | --- |
 | タイトル | 得意先管理メニューのタイトルを表示します。|
 | メニューリスト | 検索、登録、削除、変更、一覧へのリンクを縦に並べて表示します。|
+| 戻るボタン | メインメニュー画面へ戻るボタンを表示します。|
+
+### 得意先別集計メニュー画面
+
+| 項目 | 説明 |
+| --- | --- |
+| タイトル | 得意先別集計メニューのタイトルを表示します。|
+| 集計カード | 月次・年次・商品別の各集計カードと説明文、遷移ボタンを表示します。|
 | 戻るボタン | メインメニュー画面へ戻るボタンを表示します。|
 
 ### 得意先検索画面

@@ -1,0 +1,26 @@
+{% extends "psys/base.html" %}
+{% load static %}
+{% block title %}得意先別集計メニュー | 販売支援システム{% endblock %}
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'psys/css/components/cards.css' %}" />
+{% endblock %}
+{% block content %}
+<section class="page-section" aria-labelledby="reports-index-title">
+  <header class="section__header">
+    <h2 id="reports-index-title">得意先別集計メニュー</h2>
+    <p class="section__description">確認したい集計の種類を選択してください。</p>
+  </header>
+  <div class="card-grid">
+    {% for report in report_links %}
+    <article class="card">
+      <h3 class="card__title">{{ report.title }}</h3>
+      <p class="card__description">{{ report.description }}</p>
+      <a class="button button--primary" href="{{ report.url }}">開く</a>
+    </article>
+    {% endfor %}
+  </div>
+  <div class="form__actions">
+    <a class="button button--secondary" href="{% url 'psys:main-menu' %}">メインメニューに戻る</a>
+  </div>
+</section>
+{% endblock %}

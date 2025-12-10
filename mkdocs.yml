@@ -6,3 +6,10 @@ repo_url: https://github.com/haruki26/django-practice
 theme:
   name: material
   language: ja
+
+markdown_extensions:
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format

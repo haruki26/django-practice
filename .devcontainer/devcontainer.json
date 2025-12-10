@@ -24,5 +24,5 @@
   },
   "postCreateCommand": "chmod +x .devcontainer/scripts/*.sh",
   "postAttachCommand": "./.devcontainer/scripts/postAttachCommand.sh",
-  "forwardPorts": [8000]
+  "forwardPorts": [3000, 8000]
 }

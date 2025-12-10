@@ -271,8 +271,36 @@ class MainMenuView(EmployeeSessionRequiredMixin, TemplateView):
             },
             {
                 "title": "得意先別集計",
-                "description": "月次・年次・商品別の集計結果を確認します。",
+                "description": "月次・年次・商品別の集計メニューを開きます。",
+                "url": reverse_lazy("psys:reports-index"),
+            },
+        ]
+        return context
+
+
+class ReportsIndexView(EmployeeSessionRequiredMixin, TemplateView):
+    """Landing page for the reports module that lists available summaries."""
+
+    template_name = "psys/reports_index.html"
+
+    def get_context_data(self, **kwargs: object) -> dict[str, object]:
+        """Provide navigation cards for each aggregated report."""
+        context = super().get_context_data(**kwargs)
+        context["report_links"] = [
+            {
+                "title": "月別受注集計",
+                "description": "指定した年月の受注を得意先別に集計します。",
                 "url": reverse_lazy("psys:reports-monthly"),
+            },
+            {
+                "title": "年次受注集計",
+                "description": "指定年の受注状況を得意先別に確認します。",
+                "url": reverse_lazy("psys:reports-yearly"),
+            },
+            {
+                "title": "商品別受注集計",
+                "description": "得意先ごとの商品別明細を表示します。",
+                "url": reverse_lazy("psys:reports-by-item"),
             },
         ]
         return context
@@ -401,7 +429,8 @@ class CustomerSearchView(EmployeeSessionRequiredMixin, TemplateResponseFormView)
         else:
             context = self.get_context_data(form=form, customers=records)
             messages.success(
-                self.request, f"{len(records)} 件の得意先が見つかりました。詳細を確認したい行を選択してください。"
+                self.request,
+                f"{len(records)} 件の得意先が見つかりました。詳細を確認したい行を選択してください。",
             )
         logger.info(
             "Displayed customers by name",

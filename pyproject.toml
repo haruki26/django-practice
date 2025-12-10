@@ -20,7 +20,9 @@ dev = [
 ]
 
 [tool.taskipy.tasks]
-fmt = "uv run ruff check --fix && uv run ruff format"
-type = "uv run pyright"
-dev = "uv run python django_project/manage.py runserver"
-manage = "uv run python django_project/manage.py"
+fmt = "ruff check --fix && ruff format"
+type = "pyright"
+dev = "python django_project/manage.py runserver"
+manage = "python django_project/manage.py"
+docs = "mkdocs serve --dev-addr localhost:3000"
+db = "python django_project/manage.py dbshell"

@@ -26,7 +26,7 @@
           <a class="nav-link" href="{% url 'psys:top' %}">トップ</a>
           <a class="nav-link" href="{% url 'psys:main-menu' %}">メインメニュー</a>
           <a class="nav-link" href="{% url 'psys:customer-menu' %}">得意先管理</a>
-          <a class="nav-link" href="{% url 'psys:reports-monthly' %}">得意先別集計</a>
+          <a class="nav-link" href="{% url 'psys:reports-index' %}">得意先別集計</a>
           {% if employee %}
           <span class="header__user">{{ employee.employee_name }} ({{ employee.employee_no }})</span>
           <a class="nav-link" href="{% url 'psys:logout' %}">ログアウト</a>
