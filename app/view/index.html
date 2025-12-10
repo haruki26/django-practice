@@ -1,0 +1,1708 @@
+
+<!doctype html>
+<html lang="ja" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Wellness Foods 販売管理支援システムのドキュメントサイト">
+      
+      
+      
+      
+        <link rel="prev" href="../tables/">
+      
+      
+        <link rel="next" href="../../manual/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
+    
+    
+      
+        <title>画面設計 - Wellness Foods 販売管理支援システム</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.618322db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#_1" class="md-skip">
+          コンテンツにスキップ
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="ヘッダー">
+    <a href="../.." title="Wellness Foods 販売管理支援システム" class="md-header__button md-logo" aria-label="Wellness Foods 販売管理支援システム" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Wellness Foods 販売管理支援システム
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              画面設計
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="検索" placeholder="検索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="検索">
+        
+        <button type="reset" class="md-search__icon md-icon" title="クリア" aria-label="クリア" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            検索を初期化
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/haruki26/django-practice" title="リポジトリへ" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    haruki26/django-practice
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="ナビゲーション" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Wellness Foods 販売管理支援システム" class="md-nav__button md-logo" aria-label="Wellness Foods 販売管理支援システム" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Wellness Foods 販売管理支援システム
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/haruki26/django-practice" title="リポジトリへ" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    haruki26/django-practice
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Wellness Foods 販売支援システム ドキュメント
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    App
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    App
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    開発ドキュメント案内
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../development/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    開発環境ガイド
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../spec/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    プロジェクト仕様書
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tables/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    テーブル定義書
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    画面設計
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    画面設計
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目次">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目次
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        基本方針
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        画面一覧
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        画面遷移図
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        画面詳細
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="画面詳細">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        トップ画面
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ログイン画面
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        メインメニュー画面
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        得意先管理メニュー画面
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        得意先別集計メニュー画面
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        得意先検索画面
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_12" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        得意先登録画面
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_13" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        得意先変更対象選択画面
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_14" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        得意先変更画面
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_15" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        得意先削除対象選択画面
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_16" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        得意先削除確認画面
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_17" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        得意先一覧画面
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_18" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        月別受注集計画面
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_19" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        年次受注集計画面
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_20" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        商品別受注集計画面
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Manual
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Manual
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../manual/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    アプリ利用ガイド
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../manual/customers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    得意先管理の操作手順
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../manual/login/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ログイン手順
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../manual/reports/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    得意先別集計の操作手順
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目次">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目次
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        基本方針
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        画面一覧
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        画面遷移図
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        画面詳細
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="画面詳細">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        トップ画面
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ログイン画面
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        メインメニュー画面
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        得意先管理メニュー画面
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        得意先別集計メニュー画面
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        得意先検索画面
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_12" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        得意先登録画面
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_13" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        得意先変更対象選択画面
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_14" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        得意先変更画面
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_15" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        得意先削除対象選択画面
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_16" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        得意先削除確認画面
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_17" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        得意先一覧画面
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_18" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        月別受注集計画面
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_19" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        年次受注集計画面
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_20" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        商品別受注集計画面
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="_1">画面設計</h1>
+<p>このドキュメントは、販売支援システムの一部である得意先管理システムと得意先別集計システムの画面設計をまとめたものです。</p>
+<h2 id="_2">基本方針</h2>
+<ul>
+<li>画面はシンプルで直感的に操作できるように設計します。</li>
+<li>入力項目は必要最低限に抑え、ユーザーの負担を軽減します。</li>
+<li>モダンで一貫性のあるシンプルなデザインを採用し、ユーザーエクスペリエンスを向上させます。</li>
+<li>各画面には適切なバリデーションを実装し、データの整合性を確保します。</li>
+<li>エラーメッセージは具体的で分かりやすくし、ユーザーが問題を迅速に解決できるようにします。</li>
+<li>レスポンシブデザインを採用し、様々なデバイスでの利用を可能にします。</li>
+</ul>
+<h2 id="_3">画面一覧</h2>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>説明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>トップ画面</td>
+<td>システムのお知らせと導線を表示し、ログインや得意先メニューへ誘導します。</td>
+</tr>
+<tr>
+<td>ログイン画面</td>
+<td>従業員番号とパスワードでログインします。</td>
+</tr>
+<tr>
+<td>メインメニュー画面</td>
+<td>ログイン後の起点として、得意先管理と得意先別集計カードを表示します。受注管理カードは準備中として無効化します。</td>
+</tr>
+<tr>
+<td>得意先管理メニュー画面</td>
+<td>得意先管理の各機能へのリンクを一覧表示します。</td>
+</tr>
+<tr>
+<td>得意先別集計メニュー画面</td>
+<td>月次・年次・商品別の集計画面へのリンクを表示します。</td>
+</tr>
+<tr>
+<td>得意先検索画面</td>
+<td>得意先コードまたは得意先名で検索し、詳細カードまたは一覧を表示します。</td>
+</tr>
+<tr>
+<td>得意先登録画面</td>
+<td>新規得意先を登録し、結果をカードで表示します。</td>
+</tr>
+<tr>
+<td>得意先変更対象選択画面</td>
+<td>変更したい得意先を一覧から選択します。</td>
+</tr>
+<tr>
+<td>得意先変更画面</td>
+<td>選択済み得意先の情報を編集します。</td>
+</tr>
+<tr>
+<td>得意先削除対象選択画面</td>
+<td>削除したい得意先を一覧から選択します。</td>
+</tr>
+<tr>
+<td>得意先削除確認画面</td>
+<td>削除対象の詳細を再表示し、削除を確定します。</td>
+</tr>
+<tr>
+<td>得意先一覧画面</td>
+<td>登録済みの得意先を表形式で表示します。</td>
+</tr>
+<tr>
+<td>月別受注集計画面</td>
+<td>指定年月の受注を得意先別に集計します。</td>
+</tr>
+<tr>
+<td>年次受注集計画面</td>
+<td>指定年の受注を得意先別に集計します。</td>
+</tr>
+<tr>
+<td>商品別受注集計画面</td>
+<td>得意先コードを指定して商品別の受注明細を集計します。</td>
+</tr>
+</tbody>
+</table>
+<p>※ 得意先別集計はメインメニューから「得意先別集計メニュー画面」を経由し、各集計画面へ遷移します。</p>
+<h2 id="_4">画面遷移図</h2>
+<p>以下の図は主要画面間の遷移関係を示します。トップ画面やメニュー画面から各業務画面へ辿る際の導線を把握するために利用してください。</p>
+<pre class="mermaid"><code>flowchart TD
+    Top["トップ画面"] --&gt; Login["ログイン画面"]
+    Top --&gt; CustomerMenu["得意先管理メニュー"]
+    Login --&gt; MainMenu["メインメニュー画面"]
+
+    MainMenu --&gt; CustomerMenu
+    MainMenu --&gt; ReportsMenu["得意先別集計メニュー"]
+    MainMenu -.-&gt; OrdersPlaceholder["受注管理(準備中)"]
+
+    CustomerMenu --&gt; CustomerSearch["得意先検索画面"]
+    CustomerMenu --&gt; CustomerCreate["得意先登録画面"]
+    CustomerMenu --&gt; CustomerUpdateSelect["得意先変更対象選択画面"]
+    CustomerMenu --&gt; CustomerDeleteSelect["得意先削除対象選択画面"]
+    CustomerMenu --&gt; CustomerList["得意先一覧画面"]
+    CustomerMenu --&gt; MainMenu
+
+    CustomerUpdateSelect --&gt; CustomerUpdate["得意先変更画面"]
+    CustomerDeleteSelect --&gt; CustomerDeleteConfirm["得意先削除確認画面"]
+    CustomerSearch --&gt; CustomerUpdate
+    CustomerUpdate --&gt; CustomerMenu
+    CustomerDeleteConfirm --&gt; CustomerMenu
+
+    ReportsMenu --&gt; ReportsMonthly["月別受注集計画面"]
+    ReportsMenu --&gt; ReportsYearly["年次受注集計画面"]
+    ReportsMenu --&gt; ReportsItem["商品別受注集計画面"]
+    ReportsMenu --&gt; MainMenu
+
+    ReportsMonthly --&gt; ReportsYearly
+    ReportsYearly --&gt; ReportsMonthly
+    ReportsItem --&gt; ReportsMonthly</code></pre>
+<h2 id="_5">画面詳細</h2>
+<p>各画面の主要な入出力項目を示します。</p>
+<h3 id="_6">トップ画面</h3>
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>説明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>タイトル</td>
+<td>販売支援システムの名称を表示します。</td>
+</tr>
+<tr>
+<td>お知らせカード</td>
+<td>システム概要やロードマップなどのメッセージをカード形式で表示します。</td>
+</tr>
+<tr>
+<td>アクションボタン</td>
+<td>ログイン画面と得意先管理メニューへのリンクを表示します。</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_7">ログイン画面</h3>
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>説明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>タイトル</td>
+<td>ログイン画面のタイトルを表示します。</td>
+</tr>
+<tr>
+<td>従業員番号</td>
+<td>従業員番号の入力欄を表示します。</td>
+</tr>
+<tr>
+<td>パスワード</td>
+<td>パスワードの入力欄を表示します。</td>
+</tr>
+<tr>
+<td>アクションボタン</td>
+<td>ログイン実行とトップへ戻るボタンを表示します。</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_8">メインメニュー画面</h3>
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>説明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>タイトル</td>
+<td>メインメニューのタイトルを表示します。</td>
+</tr>
+<tr>
+<td>得意先管理カード</td>
+<td>得意先管理メニューへのリンクを表示します。</td>
+</tr>
+<tr>
+<td>受注管理カード</td>
+<td>準備中バッジを付与し、遷移を無効化したカードを表示します。</td>
+</tr>
+<tr>
+<td>得意先別集計カード</td>
+<td>月別受注集計画面へのリンクを表示します。</td>
+</tr>
+<tr>
+<td>ログアウトボタン</td>
+<td>ログアウト操作のリンクを表示します。</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_9">得意先管理メニュー画面</h3>
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>説明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>タイトル</td>
+<td>得意先管理メニューのタイトルを表示します。</td>
+</tr>
+<tr>
+<td>メニューリスト</td>
+<td>検索、登録、削除、変更、一覧へのリンクを縦に並べて表示します。</td>
+</tr>
+<tr>
+<td>戻るボタン</td>
+<td>メインメニュー画面へ戻るボタンを表示します。</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_10">得意先別集計メニュー画面</h3>
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>説明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>タイトル</td>
+<td>得意先別集計メニューのタイトルを表示します。</td>
+</tr>
+<tr>
+<td>集計カード</td>
+<td>月次・年次・商品別の各集計カードと説明文、遷移ボタンを表示します。</td>
+</tr>
+<tr>
+<td>戻るボタン</td>
+<td>メインメニュー画面へ戻るボタンを表示します。</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_11">得意先検索画面</h3>
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>説明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>タイトル</td>
+<td>得意先検索のタイトルを表示します。</td>
+</tr>
+<tr>
+<td>得意先検索フォーム</td>
+<td>得意先コード（完全一致）と得意先名（部分一致）の入力欄、検索ボタンを表示します。</td>
+</tr>
+<tr>
+<td>検索結果カード</td>
+<td>検索結果が1件のときに得意先コード、名称、連絡先、住所、割引率を表示します。</td>
+</tr>
+<tr>
+<td>検索結果一覧</td>
+<td>複数件ヒットしたときに得意先コード・名称・詳細表示ボタンを表形式で表示します。</td>
+</tr>
+<tr>
+<td>メニューに戻るボタン</td>
+<td>得意先管理メニューへ戻るリンクを表示します。</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_12">得意先登録画面</h3>
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>説明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>タイトル</td>
+<td>得意先登録のタイトルを表示します。</td>
+</tr>
+<tr>
+<td>入力フォーム</td>
+<td>得意先名、電話番号、郵便番号、住所、割引率の入力欄を表示します。</td>
+</tr>
+<tr>
+<td>アクションボタン</td>
+<td>登録実行と得意先管理メニューへ戻るボタンを表示します。</td>
+</tr>
+<tr>
+<td>登録結果カード</td>
+<td>登録が完了した得意先の詳細を表示します。</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_13">得意先変更対象選択画面</h3>
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>説明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>タイトル</td>
+<td>得意先変更のタイトルを表示します。</td>
+</tr>
+<tr>
+<td>得意先一覧テーブル</td>
+<td>得意先コード、得意先名、編集ボタン列を表示します。</td>
+</tr>
+<tr>
+<td>戻るボタン</td>
+<td>得意先管理メニューへ戻るボタンを表示します。</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_14">得意先変更画面</h3>
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>説明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>タイトル</td>
+<td>選択済み得意先の編集タイトルを表示します。</td>
+</tr>
+<tr>
+<td>入力フォーム</td>
+<td>得意先名、電話番号、郵便番号、住所、割引率の入力欄を表示します。</td>
+</tr>
+<tr>
+<td>アクションボタン</td>
+<td>更新実行、別の得意先を選ぶ、得意先管理メニューへ戻るボタンを表示します。</td>
+</tr>
+<tr>
+<td>更新結果カード</td>
+<td>最新の得意先情報を表示します。</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_15">得意先削除対象選択画面</h3>
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>説明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>タイトル</td>
+<td>得意先削除のタイトルを表示します。</td>
+</tr>
+<tr>
+<td>得意先一覧テーブル</td>
+<td>得意先コード、得意先名、削除確認ボタン列を表示します。</td>
+</tr>
+<tr>
+<td>戻るボタン</td>
+<td>得意先管理メニューへ戻るボタンを表示します。</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_16">得意先削除確認画面</h3>
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>説明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>タイトル</td>
+<td>削除確認のタイトルを表示します。</td>
+</tr>
+<tr>
+<td>警告メッセージ</td>
+<td>削除が取り消せない旨を強調表示します。</td>
+</tr>
+<tr>
+<td>得意先詳細カード</td>
+<td>得意先コード、名称、連絡先、住所、割引率を表示します。</td>
+</tr>
+<tr>
+<td>アクションボタン</td>
+<td>削除実行、一覧へ戻る、得意先管理メニューへ戻るボタンを表示します。</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_17">得意先一覧画面</h3>
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>説明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>タイトル</td>
+<td>得意先一覧のタイトルを表示します。</td>
+</tr>
+<tr>
+<td>得意先一覧テーブル</td>
+<td>得意先コード、得意先名、電話番号、郵便番号、住所、割引率を表示します。</td>
+</tr>
+<tr>
+<td>戻るボタン</td>
+<td>得意先管理メニューへ戻るボタンを表示します。</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_18">月別受注集計画面</h3>
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>説明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>タイトル</td>
+<td>月別受注集計のタイトルを表示します。</td>
+</tr>
+<tr>
+<td>検索フォーム</td>
+<td>集計年・月の入力欄と集計実行ボタンを表示します。</td>
+</tr>
+<tr>
+<td>集計結果テーブル</td>
+<td>得意先コード、得意先名、合計金額(税込)を表示します。</td>
+</tr>
+<tr>
+<td>総計カード</td>
+<td>全得意先の合計金額(税込)を表示します。</td>
+</tr>
+<tr>
+<td>ナビゲーション</td>
+<td>年次受注集計画面へのリンクを表示します。</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_19">年次受注集計画面</h3>
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>説明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>タイトル</td>
+<td>年次受注集計のタイトルを表示します。</td>
+</tr>
+<tr>
+<td>検索フォーム</td>
+<td>集計年の入力欄と集計実行ボタンを表示します。</td>
+</tr>
+<tr>
+<td>集計結果テーブル</td>
+<td>得意先コード、得意先名、年間合計金額(税込)を表示します。</td>
+</tr>
+<tr>
+<td>総計カード</td>
+<td>全得意先の年間合計(税込)を表示します。</td>
+</tr>
+<tr>
+<td>ナビゲーション</td>
+<td>月別受注集計画面へのリンクを表示します。</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_20">商品別受注集計画面</h3>
+<table>
+<thead>
+<tr>
+<th>項目</th>
+<th>説明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>タイトル</td>
+<td>商品別受注集計のタイトルを表示します。</td>
+</tr>
+<tr>
+<td>検索フォーム</td>
+<td>得意先コードの入力欄と集計実行ボタンを表示します。</td>
+</tr>
+<tr>
+<td>得意先情報カード</td>
+<td>得意先名とコードを表示します。</td>
+</tr>
+<tr>
+<td>集計結果テーブル</td>
+<td>商品コード、商品名、合計数量、単価(税込)、合計金額(税込)を表示します。</td>
+</tr>
+<tr>
+<td>総計カード</td>
+<td>商品別合計の総計(税込)を表示します。</td>
+</tr>
+<tr>
+<td>ナビゲーション</td>
+<td>月別受注集計画面へのリンクを表示します。</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "\u30b3\u30d4\u30fc\u3057\u307e\u3057\u305f", "clipboard.copy": "\u30af\u30ea\u30c3\u30d7\u30dc\u30fc\u30c9\u3078\u30b3\u30d4\u30fc", "search.result.more.one": "\u3053\u306e\u30da\u30fc\u30b8\u5185\u306b\u3082\u30461\u4ef6\u898b\u3064\u304b\u308a\u307e\u3057\u305f", "search.result.more.other": "\u3053\u306e\u30da\u30fc\u30b8\u5185\u306b\u3042\u3068#\u4ef6\u898b\u3064\u304b\u308a\u307e\u3057\u305f", "search.result.none": "\u4f55\u3082\u898b\u3064\u304b\u308a\u307e\u305b\u3093\u3067\u3057\u305f", "search.result.one": "1\u4ef6\u898b\u3064\u304b\u308a\u307e\u3057\u305f", "search.result.other": "#\u4ef6\u898b\u3064\u304b\u308a\u307e\u3057\u305f", "search.result.placeholder": "\u691c\u7d22\u30ad\u30fc\u30ef\u30fc\u30c9\u3092\u5165\u529b\u3057\u3066\u304f\u3060\u3055\u3044", "search.result.term.missing": "\u691c\u7d22\u306b\u542b\u307e\u308c\u306a\u3044", "select.version": "\u30d0\u30fc\u30b8\u30e7\u30f3\u5207\u308a\u66ff\u3048"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      
+    
+  </body>
+</html>
