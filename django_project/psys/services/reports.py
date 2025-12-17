@@ -75,7 +75,7 @@ def get_yearly_summary(year: int) -> tuple[list[CustomerSummary], Decimal]:
     """Return yearly order totals grouped by customer."""
     try:
         aggregates = (
-            Orders.objects.filter(  # type: ignore[attr-defined]
+            Orders.objects.filter(
                 order_date__year=year,
                 customer_code__delete_flag=0,
             )
@@ -83,7 +83,7 @@ def get_yearly_summary(year: int) -> tuple[list[CustomerSummary], Decimal]:
             .annotate(total_amount=Sum("total_price"))
             .order_by("customer_code")
         )
-    except DatabaseError as exc:  # pragma: no cover - depends on database state
+    except DatabaseError as exc:
         logger.exception("Failed to build yearly summary", extra={"year": year})
         message = "年次集計の取得に失敗しました。時間をおいて再度お試しください。"
         raise ReportServiceError(message) from exc
@@ -106,7 +106,7 @@ def get_item_summary(customer_code: str) -> tuple[Customer, list[ItemReportRow],
 
     try:
         aggregates = (
-            OrderDetails.objects.filter(  # type: ignore[attr-defined]
+            OrderDetails.objects.filter(
                 order_no__customer_code=customer,
             )
             .values("item_code", "item_code__item_name", "item_code__price")
@@ -116,7 +116,7 @@ def get_item_summary(customer_code: str) -> tuple[Customer, list[ItemReportRow],
             )
             .order_by("item_code")
         )
-    except DatabaseError as exc:  # pragma: no cover - depends on database state
+    except DatabaseError as exc:
         logger.exception(
             "Failed to build item summary",
             extra={"customer_code": customer.customer_code},

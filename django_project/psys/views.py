@@ -49,11 +49,6 @@ if TYPE_CHECKING:
     from django.template.response import TemplateResponse
 
     from psys.models import Customer
-else:  # pragma: no cover - runtime import not required
-    SessionBase = object
-    HttpRequest = object
-    HttpResponse = object
-    HttpResponseRedirect = object
 
 
 def _get_session(request: HttpRequest) -> SessionBase:

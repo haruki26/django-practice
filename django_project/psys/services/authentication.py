@@ -37,7 +37,7 @@ def authenticate_employee(employee_no: str, password: str) -> Employee:
         AuthenticationError: If the credentials are invalid or a system error occurs.
     """
     try:
-        employee = Employee.objects.get(employee_no=employee_no)  # type: ignore[attr-defined]
+        employee = Employee.objects.get(employee_no=employee_no)
     except ObjectDoesNotExist as exc:
         logger.info(
             "Employee not found during authentication",
@@ -45,7 +45,7 @@ def authenticate_employee(employee_no: str, password: str) -> Employee:
         )
         message = "従業員番号またはパスワードが正しくありません。"
         raise AuthenticationError(message) from exc
-    except DatabaseError as exc:  # pragma: no cover - connection errors are environment specific
+    except DatabaseError as exc:
         logger.exception(
             "Database error while fetching employee",
             extra={"employee_no": employee_no},

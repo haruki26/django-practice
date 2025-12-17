@@ -9,7 +9,7 @@ from utils.logger import get_logger
 
 from psys.models import Customer
 
-if TYPE_CHECKING:  # pragma: no cover - typing support only
+if TYPE_CHECKING:
     from contextlib import AbstractContextManager
 
     from django.db.models import QuerySet
